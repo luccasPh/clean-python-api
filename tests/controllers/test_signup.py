@@ -41,3 +41,17 @@ def test_should_400_if_no_password_provided():
     response = sut.handle(request)
     assert response.status_code == 400
     assert type(response.body["message"]) == MissingParamError
+
+
+def test_should_400_if_no_password_confirmation_provided():
+    sut = SignUpController()
+    request = Request(
+        body={
+            "name": "John Doe",
+            "email": "test@example.com",
+            "password": "teste",
+        }
+    )
+    response = sut.handle(request)
+    assert response.status_code == 400
+    assert type(response.body["message"]) == MissingParamError

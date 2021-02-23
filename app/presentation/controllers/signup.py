@@ -6,7 +6,7 @@ from ..helpers.http_herlper import bad_request
 class SignUpController:
     def handle(self, request: Request) -> Response:
         data = request.body
-        required_fields = ("name", "email", "password")
+        required_fields = ("name", "email", "password", "password_confirmation")
         for field in required_fields:
             if not data.get(field):
                 return bad_request(MissingParamError(field))
