@@ -93,3 +93,19 @@ def test_should_400_if_invalid_email_provided(test_is_valid, sut):
     assert response.status_code == 400
     assert type(response.body["message"]) == InvalidParamError
     assert response.body["message"].args[0] == "Invalid param: email"
+
+
+@patch.object(EmailValidatorStub, "is_valid")
+def test_should_call_email_validator_correct_value(
+    test_is_valid, sut: SignUpController
+):
+    request = Request(
+        body={
+            "name": "John Doe",
+            "email": "test@example.com",
+            "password": "teste",
+            "password_confirmation": "test",
+        }
+    )
+    sut.handle(request)
+    test_is_valid.assert_called_with("test@example.com")
