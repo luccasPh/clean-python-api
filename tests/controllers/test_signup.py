@@ -13,6 +13,7 @@ def test_should_400_if_no_name_provided():
     response = sut.handle(request)
     assert response.status_code == 400
     assert type(response.body["message"]) == MissingParamError
+    assert response.body["message"].args[0] == "Missing param: name"
 
 
 def test_should_400_if_no_email_provided():
@@ -27,6 +28,7 @@ def test_should_400_if_no_email_provided():
     response = sut.handle(request)
     assert response.status_code == 400
     assert type(response.body["message"]) == MissingParamError
+    assert response.body["message"].args[0] == "Missing param: email"
 
 
 def test_should_400_if_no_password_provided():
@@ -41,6 +43,7 @@ def test_should_400_if_no_password_provided():
     response = sut.handle(request)
     assert response.status_code == 400
     assert type(response.body["message"]) == MissingParamError
+    assert response.body["message"].args[0] == "Missing param: password"
 
 
 def test_should_400_if_no_password_confirmation_provided():
@@ -55,3 +58,4 @@ def test_should_400_if_no_password_confirmation_provided():
     response = sut.handle(request)
     assert response.status_code == 400
     assert type(response.body["message"]) == MissingParamError
+    assert response.body["message"].args[0] == "Missing param: password_confirmation"
