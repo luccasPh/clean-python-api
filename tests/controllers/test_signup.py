@@ -1,4 +1,4 @@
-from app.presentation import SignUpController, Request
+from app.presentation import SignUpController, Request, MissingParamError
 
 
 def test_should_400_if_no_name_provided():
@@ -12,7 +12,7 @@ def test_should_400_if_no_name_provided():
     )
     response = sut.handle(request)
     assert response.status_code == 400
-    assert response.body["message"] == "Missing param: name"
+    assert type(response.body["message"]) == MissingParamError
 
 
 def test_should_400_if_no_email_provided():
@@ -26,4 +26,4 @@ def test_should_400_if_no_email_provided():
     )
     response = sut.handle(request)
     assert response.status_code == 400
-    assert response.body["message"] == "Missing param: email"
+    assert type(response.body["message"]) == MissingParamError
