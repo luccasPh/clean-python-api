@@ -1,8 +1,14 @@
+import pytest
+
 from app.presentation import SignUpController, Request, MissingParamError
 
 
-def test_should_400_if_no_name_provided():
-    sut = SignUpController()
+@pytest.fixture
+def sut():
+    yield SignUpController()
+
+
+def test_should_400_if_no_name_provided(sut: SignUpController):
     request = Request(
         body={
             "email": "test@example.com",
@@ -16,8 +22,7 @@ def test_should_400_if_no_name_provided():
     assert response.body["message"].args[0] == "Missing param: name"
 
 
-def test_should_400_if_no_email_provided():
-    sut = SignUpController()
+def test_should_400_if_no_email_provided(sut: SignUpController):
     request = Request(
         body={
             "name": "John Doe",
@@ -31,8 +36,7 @@ def test_should_400_if_no_email_provided():
     assert response.body["message"].args[0] == "Missing param: email"
 
 
-def test_should_400_if_no_password_provided():
-    sut = SignUpController()
+def test_should_400_if_no_password_provided(sut: SignUpController):
     request = Request(
         body={
             "name": "John Doe",
@@ -46,8 +50,7 @@ def test_should_400_if_no_password_provided():
     assert response.body["message"].args[0] == "Missing param: password"
 
 
-def test_should_400_if_no_password_confirmation_provided():
-    sut = SignUpController()
+def test_should_400_if_no_password_confirmation_provided(sut: SignUpController):
     request = Request(
         body={
             "name": "John Doe",
