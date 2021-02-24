@@ -19,8 +19,10 @@ class SignUpController(Controller):
                 if not data.get(field):
                     return bad_request(MissingParamError(field))
 
+            if data.get("password") != data.get("password_confirmation"):
+                return bad_request(InvalidParamError("password_confirmation"))
+
             is_valid = self._email_validator.is_valid(data.get("email"))
-            print(is_valid)
             if not is_valid:
                 return bad_request(InvalidParamError("email"))
 

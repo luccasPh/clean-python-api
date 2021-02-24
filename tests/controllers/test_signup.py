@@ -79,6 +79,21 @@ def test_should_400_if_no_password_confirmation_provided(sut: SignUpController):
     assert response.body["message"].args[0] == "Missing param: password_confirmation"
 
 
+def test_should_400_if_password_confirmation_fails(sut: SignUpController):
+    request = Request(
+        body={
+            "name": "John Doe",
+            "email": "invalid@example.com",
+            "password": "test",
+            "password_confirmation": "test_test",
+        }
+    )
+    response = sut.handle(request)
+    assert response.status_code == 400
+    assert type(response.body["message"]) == InvalidParamError
+    assert response.body["message"].args[0] == "Invalid param: password_confirmation"
+
+
 @patch.object(EmailValidatorStub, "is_valid")
 def test_should_400_if_invalid_email_provided(test_is_valid, sut: SignUpController):
     test_is_valid.return_value = False
