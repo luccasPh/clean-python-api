@@ -1,6 +1,7 @@
 import pytest
 from mock import patch
 
+from app.domain import AccountModel, AddAccount, AddAccountModel
 from app.presentation import (
     SignUpController,
     Request,
@@ -16,10 +17,22 @@ class EmailValidatorStub(EmailValidator):
         return True
 
 
+class AddAccountStub(AddAccount):
+    def add(self, account_in: AddAccountModel) -> AccountModel:
+        fake_account = {
+            "id": "valid_id",
+            "name": "valid_name",
+            "email": "valid_email@example.com",
+            "password_hash": "valid_password_hash",
+        }
+        return AccountModel(**fake_account)
+
+
 @pytest.fixture
 def sut():
     email_validator = EmailValidatorStub()
-    sut = SignUpController(email_validator)
+    add_account_stub = AddAccountStub()
+    sut = SignUpController(email_validator, add_account_stub)
     yield sut
 
 
@@ -101,7 +114,7 @@ def test_should_400_if_invalid_email_provided(test_is_valid, sut: SignUpControll
         body={
             "name": "John Doe",
             "email": "invalid@example.com",
-            "password": "teste",
+            "password": "test",
             "password_confirmation": "test",
         }
     )
@@ -119,7 +132,7 @@ def test_should_call_email_validator_correct_value(
         body={
             "name": "John Doe",
             "email": "test@example.com",
-            "password": "teste",
+            "password": "test",
             "password_confirmation": "test",
         }
     )
@@ -136,7 +149,7 @@ def test_should_500_if_email_validator_raise_exception(
         body={
             "name": "John Doe",
             "email": "test@example.com",
-            "password": "teste",
+            "password": "test",
             "password_confirmation": "test",
         }
     )
@@ -145,3 +158,22 @@ def test_should_500_if_email_validator_raise_exception(
     assert response.status_code == 500
     assert type(response.body["message"]) == ServerError
     assert response.body["message"].args[0] == "Internal server error"
+
+
+@patch.object(AddAccountStub, "add")
+def test_should_call_add_account_correct_values(test_add, sut: SignUpController):
+    request = Request(
+        body={
+            "name": "John Doe",
+            "email": "test@example.com",
+            "password": "test",
+            "password_confirmation": "test",
+        }
+    )
+    sut.handle(request)
+    expected = AddAccountModel(
+        name="John Doe",
+        email="test@example.com",
+        password="test",
+    )
+    test_add.assert_called_with(expected)
