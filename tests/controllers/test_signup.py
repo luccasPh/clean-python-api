@@ -177,3 +177,21 @@ def test_should_call_add_account_correct_values(test_add, sut: SignUpController)
         password="test",
     )
     test_add.assert_called_with(expected)
+
+
+@patch.object(AddAccountStub, "add")
+def test_should_500_if_add_account_raise_exception(test_add, sut: SignUpController):
+    test_add.side_effect = Exception()
+    request = Request(
+        body={
+            "name": "John Doe",
+            "email": "test@example.com",
+            "password": "test",
+            "password_confirmation": "test",
+        }
+    )
+    response = sut.handle(request)
+    print(response)
+    assert response.status_code == 500
+    assert type(response.body["message"]) == ServerError
+    assert response.body["message"].args[0] == "Internal server error"
