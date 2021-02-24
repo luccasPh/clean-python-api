@@ -80,7 +80,7 @@ def test_should_400_if_no_password_confirmation_provided(sut: SignUpController):
 
 
 @patch.object(EmailValidatorStub, "is_valid")
-def test_should_400_if_invalid_email_provided(test_is_valid, sut):
+def test_should_400_if_invalid_email_provided(test_is_valid, sut: SignUpController):
     test_is_valid.return_value = False
     request = Request(
         body={
