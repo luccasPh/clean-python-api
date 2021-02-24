@@ -195,3 +195,23 @@ def test_should_500_if_add_account_raise_exception(test_add, sut: SignUpControll
     assert response.status_code == 500
     assert type(response.body["message"]) == ServerError
     assert response.body["message"].args[0] == "Internal server error"
+
+
+def test_should_200_if_data_is_valid(sut: SignUpController):
+    request = Request(
+        body={
+            "name": "John Doe",
+            "email": "test@example.com",
+            "password": "test",
+            "password_confirmation": "test",
+        }
+    )
+    expected = {
+        "id": "valid_id",
+        "name": "valid_name",
+        "email": "valid_email@example.com",
+        "password_hash": "valid_password_hash",
+    }
+    response = sut.handle(request)
+    assert response.status_code == 200
+    assert response.body == expected

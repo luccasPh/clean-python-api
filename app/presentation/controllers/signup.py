@@ -1,3 +1,5 @@
+from dataclasses import asdict
+
 from app.domain import AddAccount
 from app.domain import AddAccountModel
 from ..protocols.http import Request, Response
@@ -6,7 +8,7 @@ from ..protocols.controller import Controller
 from ..errors.missing_param_error import MissingParamError
 from ..errors.invalid_param_error import InvalidParamError
 from ..errors.server_error import ServerError
-from ..helpers.http_herlper import bad_request, server_error
+from ..helpers.http_herlper import bad_request, server_error, ok
 
 
 class SignUpController(Controller):
@@ -31,7 +33,9 @@ class SignUpController(Controller):
 
             data.pop("password_confirmation")
             account_in = AddAccountModel(**data)
-            self._add_account.add(account_in)
+            account_on = self._add_account.add(account_in)
+
+            return ok(asdict(account_on))
 
         except Exception as error:
             print(error)
