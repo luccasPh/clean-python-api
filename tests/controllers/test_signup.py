@@ -7,6 +7,7 @@ from app.presentation import (
     MissingParamError,
     InvalidParamError,
     EmailValidator,
+    ServerError,
 )
 
 
@@ -109,3 +110,23 @@ def test_should_call_email_validator_correct_value(
     )
     sut.handle(request)
     test_is_valid.assert_called_with("test@example.com")
+
+
+@patch.object(EmailValidatorStub, "is_valid")
+def test_should_500_if_email_validator_raise_exception(
+    test_is_valid, sut: SignUpController
+):
+    test_is_valid.side_effect = Exception()
+    request = Request(
+        body={
+            "name": "John Doe",
+            "email": "test@example.com",
+            "password": "teste",
+            "password_confirmation": "test",
+        }
+    )
+    response = sut.handle(request)
+    print(response)
+    assert response.status_code == 500
+    assert type(response.body["message"]) == ServerError
+    assert response.body["message"].args[0] == "Internal server error"
