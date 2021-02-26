@@ -32,10 +32,9 @@ class SignUpController(Controller):
                 return bad_request(InvalidParamError("email"))
 
             data.pop("password_confirmation")
-            account_in = AddAccountModel(**data)
-            account_on = self._add_account.add(account_in)
+            account = self._add_account.add(AddAccountModel(**data))
 
-            return ok(asdict(account_on))
+            return ok(asdict(account))
 
         except Exception as error:
             print(error)

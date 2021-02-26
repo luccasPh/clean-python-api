@@ -13,5 +13,5 @@ class AddAccountModel:
 
 class AddAccount(ABC):
     @abstractmethod
-    def add(self, account_in: AddAccountModel) -> AccountModel:
+    def add(self, data: AddAccountModel) -> AccountModel:
         ...

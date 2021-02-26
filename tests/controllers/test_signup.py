@@ -18,7 +18,7 @@ class EmailValidatorStub(EmailValidator):
 
 
 class AddAccountStub(AddAccount):
-    def add(self, account_in: AddAccountModel) -> AccountModel:
+    def add(self, data: AddAccountModel) -> AccountModel:
         fake_account = {
             "id": "valid_id",
             "name": "valid_name",
