@@ -14,4 +14,4 @@ class AddAccountModel:
 class AddAccount(ABC):
     @abstractmethod
     def add(self, data: AddAccountModel) -> AccountModel:
-        """Abstract method for adding a database account"""
+        """Abstract method for creating an account"""
