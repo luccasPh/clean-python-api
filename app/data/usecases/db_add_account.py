@@ -8,3 +8,4 @@ class DbAddAccount(AddAccount):
 
     def add(self, data: AddAccountModel) -> AccountModel:
         self._encrypter.encrypt(data.password)
+        return None
