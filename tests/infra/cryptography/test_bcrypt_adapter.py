@@ -27,3 +27,11 @@ def test_should_return_hash(mock_hashpw: MagicMock, sut: BcryptAdapter):
     mock_hashpw.return_value = value.encode("utf-8")
     hash = sut.encrypt("any_value")
     assert hash == "hash"
+
+
+@patch("app.infra.cryptography.bcrypt_adapter.hashpw")
+def test_should_raise_if_bcrypt_raise(mock_hashpw: MagicMock, sut: BcryptAdapter):
+    mock_hashpw.side_effect = Exception()
+    with pytest.raises(Exception) as excinfo:
+        assert sut.encrypt("any_value")
+    assert type(excinfo.value) is Exception
