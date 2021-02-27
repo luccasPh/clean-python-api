@@ -1,5 +1,5 @@
 import pytest
-from mock import patch
+from mock import patch, MagicMock
 
 from app.domain import AccountModel, AddAccount, AddAccountModel
 from app.presentation import (
@@ -108,8 +108,10 @@ def test_should_400_if_password_confirmation_fails(sut: SignUpController):
 
 
 @patch.object(EmailValidatorStub, "is_valid")
-def test_should_400_if_invalid_email_provided(test_is_valid, sut: SignUpController):
-    test_is_valid.return_value = False
+def test_should_400_if_invalid_email_provided(
+    mock_is_valid: MagicMock, sut: SignUpController
+):
+    mock_is_valid.return_value = False
     request = Request(
         body={
             "name": "John Doe",
@@ -126,7 +128,7 @@ def test_should_400_if_invalid_email_provided(test_is_valid, sut: SignUpControll
 
 @patch.object(EmailValidatorStub, "is_valid")
 def test_should_call_email_validator_correct_value(
-    test_is_valid, sut: SignUpController
+    mock_is_valid: MagicMock, sut: SignUpController
 ):
     request = Request(
         body={
@@ -137,14 +139,14 @@ def test_should_call_email_validator_correct_value(
         }
     )
     sut.handle(request)
-    test_is_valid.assert_called_with("test@example.com")
+    mock_is_valid.assert_called_with("test@example.com")
 
 
 @patch.object(EmailValidatorStub, "is_valid")
 def test_should_500_if_email_validator_raise_exception(
-    test_is_valid, sut: SignUpController
+    mock_is_valid: MagicMock, sut: SignUpController
 ):
-    test_is_valid.side_effect = Exception()
+    mock_is_valid.side_effect = Exception()
     request = Request(
         body={
             "name": "John Doe",
@@ -161,7 +163,9 @@ def test_should_500_if_email_validator_raise_exception(
 
 
 @patch.object(AddAccountStub, "add")
-def test_should_call_add_account_correct_values(test_add, sut: SignUpController):
+def test_should_call_add_account_correct_values(
+    mock_add: MagicMock, sut: SignUpController
+):
     request = Request(
         body={
             "name": "John Doe",
@@ -176,12 +180,14 @@ def test_should_call_add_account_correct_values(test_add, sut: SignUpController)
         email="test@example.com",
         password="test",
     )
-    test_add.assert_called_with(expected)
+    mock_add.assert_called_with(expected)
 
 
 @patch.object(AddAccountStub, "add")
-def test_should_500_if_add_account_raise_exception(test_add, sut: SignUpController):
-    test_add.side_effect = Exception()
+def test_should_500_if_add_account_raise_exception(
+    mock_add: MagicMock, sut: SignUpController
+):
+    mock_add.side_effect = Exception()
     request = Request(
         body={
             "name": "John Doe",
