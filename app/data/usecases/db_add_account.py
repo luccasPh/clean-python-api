@@ -1,11 +1,15 @@
 from app.domain import AddAccount, AddAccountModel, AccountModel
 from ..protocols.encrypter import Encrypter
+from ..protocols.add_account_repo import AddAccountRepo
 
 
 class DbAddAccount(AddAccount):
-    def __init__(self, encrypter: Encrypter):
+    def __init__(self, encrypter: Encrypter, add_account_repo: AddAccountRepo):
         self._encrypter = encrypter
+        self._add_account_repo = add_account_repo
 
     def add(self, data: AddAccountModel) -> AccountModel:
-        self._encrypter.encrypt(data.password)
+        hashed_password = self._encrypter.encrypt(data.password)
+        data.password = hashed_password
+        self._add_account_repo.add(data)
         return None
