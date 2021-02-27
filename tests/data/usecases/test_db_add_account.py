@@ -64,3 +64,14 @@ def test_should_call_add_account_repo_with_correct_values(
     )
     sut.add(account_data)
     mock_add.assert_called_with(expected_call)
+
+
+@patch.object(AddAccountRepoStub, "add")
+def test_should_raise_if_add_account_repo_raise(mock_add: MagicMock, sut: DbAddAccount):
+    mock_add.side_effect = Exception()
+    account_data = AddAccountModel(
+        name="valid_name", email="valid_email@example.com", password="valid_password"
+    )
+    with pytest.raises(Exception) as excinfo:
+        assert sut.add(account_data)
+    assert type(excinfo.value) is Exception
