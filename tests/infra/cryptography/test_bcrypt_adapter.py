@@ -3,7 +3,7 @@ from mock import patch, MagicMock
 
 from app.infra import BcryptAdapter
 
-SALT = 12
+SALT = b"$2b$12$9ITqN6psxZRjP8hN04j8Be"
 
 
 @pytest.fixture
@@ -16,5 +16,14 @@ def sut():
 def test_should_call_bcrypt_with_correct_values(
     mock_hashpw: MagicMock, sut: BcryptAdapter
 ):
-    sut.encrypt("any_value")
-    mock_hashpw.assert_called_with("any_value", SALT)
+    value = "any_value"
+    sut.encrypt(value)
+    mock_hashpw.assert_called_with(value.encode("utf-8"), SALT)
+
+
+@patch("app.infra.cryptography.bcrypt_adapter.hashpw")
+def test_should_return_hash(mock_hashpw: MagicMock, sut: BcryptAdapter):
+    value = "hash"
+    mock_hashpw.return_value = value.encode("utf-8")
+    hash = sut.encrypt("any_value")
+    assert hash == "hash"
