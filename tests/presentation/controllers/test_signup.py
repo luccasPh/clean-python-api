@@ -23,7 +23,7 @@ class AddAccountStub(AddAccount):
             "id": "valid_id",
             "name": "valid_name",
             "email": "valid_email@example.com",
-            "password_hash": "valid_password_hash",
+            "hashed_password": "valid_password_hash",
         }
         return AccountModel(**fake_account)
 
@@ -216,7 +216,7 @@ def test_should_200_if_data_is_valid(sut: SignUpController):
         "id": "valid_id",
         "name": "valid_name",
         "email": "valid_email@example.com",
-        "password_hash": "valid_password_hash",
+        "hashed_password": "valid_password_hash",
     }
     response = sut.handle(request)
     assert response.status_code == 200

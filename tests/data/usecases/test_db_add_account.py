@@ -16,7 +16,7 @@ class AddAccountRepoStub(AddAccountRepo):
             id="valid_id",
             name="valid_name",
             email="valid_email@example.com",
-            password_hash="hashed_password",
+            hashed_password="valid_hashed_password",
         )
         return fake_account
 
@@ -85,7 +85,7 @@ def test_should_return_an_account(sut: DbAddAccount):
         id="valid_id",
         name="valid_name",
         email="valid_email@example.com",
-        password_hash="hashed_password",
+        hashed_password="valid_hashed_password",
     )
     account = sut.add(account_data)
     assert account == expected_account
