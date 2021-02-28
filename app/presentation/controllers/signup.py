@@ -1,7 +1,9 @@
+import traceback
 from dataclasses import asdict
 
 from app.domain import AddAccount
 from app.domain import AddAccountModel
+from app.main import log_controller_handler
 from ..protocols.http import HttpRequest, HttpResponse
 from ..protocols.email_validator import EmailValidator
 from ..protocols.controller import Controller
@@ -16,6 +18,7 @@ class SignUpController(Controller):
         self._email_validator = email_validator
         self._add_account = add_account
 
+    @log_controller_handler
     def handle(self, request: HttpRequest) -> HttpResponse:
         try:
             data = request.body
@@ -36,6 +39,5 @@ class SignUpController(Controller):
 
             return ok(asdict(account))
 
-        except Exception as error:
-            print(error)
-            return server_error(ServerError())
+        except Exception:
+            return server_error(ServerError(), traceback.format_exc())

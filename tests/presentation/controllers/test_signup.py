@@ -147,7 +147,6 @@ def test_should_500_if_email_validator_raise_exception(
         }
     )
     response = sut.handle(request)
-    print(response)
     assert response.status_code == 500
     assert response.body["message"] == "Internal server error"
 
@@ -187,7 +186,6 @@ def test_should_500_if_add_account_raise_exception(
         }
     )
     response = sut.handle(request)
-    print(response)
     assert response.status_code == 500
     assert response.body["message"] == "Internal server error"
 
