@@ -5,4 +5,4 @@ from ..presentation.protocols.email_validator import EmailValidator
 
 class EmailValidatorAdapter(EmailValidator):
     def is_valid(self, email: str) -> bool:
-        return validate_email(email)
+        return validate_email(email, check_mx=False, skip_smtp=True)
