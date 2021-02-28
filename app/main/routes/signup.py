@@ -1,8 +1,11 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Request, Response
+
+from ..adapters.fastapi_route_adapter import adpter_route
+from ..factories.signup import make_signup_controller
 
 router = APIRouter()
 
 
 @router.post("")
-def create_account():
-    return {"message": "ok"}
+async def create_account(request: Request, response: Response):
+    return await adpter_route(request, response, make_signup_controller())
