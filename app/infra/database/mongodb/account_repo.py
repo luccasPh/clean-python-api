@@ -14,5 +14,5 @@ class AccountMongoRepo(AddAccountRepo):
         account_data["hashed_password"] = account_data.pop("password")
         obj_id = self._account_collection.insert_one(account_data).inserted_id
         account = self._account_collection.find_one({"_id": obj_id})
-        account["id"] = account.pop("_id")
+        account["id"] = str(account.pop("_id"))
         return AccountModel(**account)
