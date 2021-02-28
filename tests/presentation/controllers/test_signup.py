@@ -5,10 +5,7 @@ from app.domain import AccountModel, AddAccount, AddAccountModel
 from app.presentation import (
     SignUpController,
     HttpRequest,
-    MissingParamError,
-    InvalidParamError,
     EmailValidator,
-    ServerError,
 )
 
 
@@ -46,8 +43,7 @@ def test_should_400_if_no_name_provided(sut: SignUpController):
     )
     response = sut.handle(request)
     assert response.status_code == 400
-    assert type(response.body["message"]) == MissingParamError
-    assert response.body["message"].args[0] == "Missing param: name"
+    assert response.body["message"] == "Missing param: name"
 
 
 def test_should_400_if_no_email_provided(sut: SignUpController):
@@ -60,8 +56,7 @@ def test_should_400_if_no_email_provided(sut: SignUpController):
     )
     response = sut.handle(request)
     assert response.status_code == 400
-    assert type(response.body["message"]) == MissingParamError
-    assert response.body["message"].args[0] == "Missing param: email"
+    assert response.body["message"] == "Missing param: email"
 
 
 def test_should_400_if_no_password_provided(sut: SignUpController):
@@ -74,8 +69,7 @@ def test_should_400_if_no_password_provided(sut: SignUpController):
     )
     response = sut.handle(request)
     assert response.status_code == 400
-    assert type(response.body["message"]) == MissingParamError
-    assert response.body["message"].args[0] == "Missing param: password"
+    assert response.body["message"] == "Missing param: password"
 
 
 def test_should_400_if_no_password_confirmation_provided(sut: SignUpController):
@@ -88,8 +82,7 @@ def test_should_400_if_no_password_confirmation_provided(sut: SignUpController):
     )
     response = sut.handle(request)
     assert response.status_code == 400
-    assert type(response.body["message"]) == MissingParamError
-    assert response.body["message"].args[0] == "Missing param: password_confirmation"
+    assert response.body["message"] == "Missing param: password_confirmation"
 
 
 def test_should_400_if_password_confirmation_fails(sut: SignUpController):
@@ -103,8 +96,7 @@ def test_should_400_if_password_confirmation_fails(sut: SignUpController):
     )
     response = sut.handle(request)
     assert response.status_code == 400
-    assert type(response.body["message"]) == InvalidParamError
-    assert response.body["message"].args[0] == "Invalid param: password_confirmation"
+    assert response.body["message"] == "Invalid param: password_confirmation"
 
 
 @patch.object(EmailValidatorStub, "is_valid")
@@ -122,8 +114,7 @@ def test_should_400_if_invalid_email_provided(
     )
     response = sut.handle(request)
     assert response.status_code == 400
-    assert type(response.body["message"]) == InvalidParamError
-    assert response.body["message"].args[0] == "Invalid param: email"
+    assert response.body["message"] == "Invalid param: email"
 
 
 @patch.object(EmailValidatorStub, "is_valid")
@@ -158,8 +149,7 @@ def test_should_500_if_email_validator_raise_exception(
     response = sut.handle(request)
     print(response)
     assert response.status_code == 500
-    assert type(response.body["message"]) == ServerError
-    assert response.body["message"].args[0] == "Internal server error"
+    assert response.body["message"] == "Internal server error"
 
 
 @patch.object(AddAccountStub, "add")
@@ -199,8 +189,7 @@ def test_should_500_if_add_account_raise_exception(
     response = sut.handle(request)
     print(response)
     assert response.status_code == 500
-    assert type(response.body["message"]) == ServerError
-    assert response.body["message"].args[0] == "Internal server error"
+    assert response.body["message"] == "Internal server error"
 
 
 def test_should_200_if_data_is_valid(sut: SignUpController):

@@ -4,10 +4,13 @@ from mock import patch, MagicMock
 from app.utils.email_validator_adapter import EmailValidatorAdapter
 from app.presentation import EmailValidator
 
+CHECK_MX = False
+SKIP_SMTP = True
+
 
 @pytest.fixture
 def sut():
-    sut = EmailValidatorAdapter()
+    sut = EmailValidatorAdapter(CHECK_MX, SKIP_SMTP)
     yield sut
 
 
@@ -30,4 +33,6 @@ def test_should_call_validator_with_correct_email(
     mock_validate_email: MagicMock, sut: EmailValidator
 ):
     sut.is_valid("valid_email@example.com")
-    mock_validate_email.assert_called_with("valid_email@example.com")
+    mock_validate_email.assert_called_once_with(
+        "valid_email@example.com", check_mx=CHECK_MX, skip_smtp=SKIP_SMTP
+    )
