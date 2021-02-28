@@ -3,11 +3,11 @@ from typing import Any, Optional
 
 
 @dataclass
-class Response:
+class HttpResponse:
     status_code: int
     body: dict[str, Any]
 
 
 @dataclass
-class Request:
+class HttpRequest:
     body: Optional[dict[str, Any]]

@@ -4,7 +4,7 @@ from mock import patch, MagicMock
 from app.domain import AccountModel, AddAccount, AddAccountModel
 from app.presentation import (
     SignUpController,
-    Request,
+    HttpRequest,
     MissingParamError,
     InvalidParamError,
     EmailValidator,
@@ -37,7 +37,7 @@ def sut():
 
 
 def test_should_400_if_no_name_provided(sut: SignUpController):
-    request = Request(
+    request = HttpRequest(
         body={
             "email": "test@example.com",
             "password": "teste",
@@ -51,7 +51,7 @@ def test_should_400_if_no_name_provided(sut: SignUpController):
 
 
 def test_should_400_if_no_email_provided(sut: SignUpController):
-    request = Request(
+    request = HttpRequest(
         body={
             "name": "John Doe",
             "password": "teste",
@@ -65,7 +65,7 @@ def test_should_400_if_no_email_provided(sut: SignUpController):
 
 
 def test_should_400_if_no_password_provided(sut: SignUpController):
-    request = Request(
+    request = HttpRequest(
         body={
             "name": "John Doe",
             "email": "test@example.com",
@@ -79,7 +79,7 @@ def test_should_400_if_no_password_provided(sut: SignUpController):
 
 
 def test_should_400_if_no_password_confirmation_provided(sut: SignUpController):
-    request = Request(
+    request = HttpRequest(
         body={
             "name": "John Doe",
             "email": "test@example.com",
@@ -93,7 +93,7 @@ def test_should_400_if_no_password_confirmation_provided(sut: SignUpController):
 
 
 def test_should_400_if_password_confirmation_fails(sut: SignUpController):
-    request = Request(
+    request = HttpRequest(
         body={
             "name": "John Doe",
             "email": "invalid@example.com",
@@ -112,7 +112,7 @@ def test_should_400_if_invalid_email_provided(
     mock_is_valid: MagicMock, sut: SignUpController
 ):
     mock_is_valid.return_value = False
-    request = Request(
+    request = HttpRequest(
         body={
             "name": "John Doe",
             "email": "invalid@example.com",
@@ -130,7 +130,7 @@ def test_should_400_if_invalid_email_provided(
 def test_should_call_email_validator_correct_value(
     mock_is_valid: MagicMock, sut: SignUpController
 ):
-    request = Request(
+    request = HttpRequest(
         body={
             "name": "John Doe",
             "email": "test@example.com",
@@ -147,7 +147,7 @@ def test_should_500_if_email_validator_raise_exception(
     mock_is_valid: MagicMock, sut: SignUpController
 ):
     mock_is_valid.side_effect = Exception()
-    request = Request(
+    request = HttpRequest(
         body={
             "name": "John Doe",
             "email": "test@example.com",
@@ -166,7 +166,7 @@ def test_should_500_if_email_validator_raise_exception(
 def test_should_call_add_account_correct_values(
     mock_add: MagicMock, sut: SignUpController
 ):
-    request = Request(
+    request = HttpRequest(
         body={
             "name": "John Doe",
             "email": "test@example.com",
@@ -188,7 +188,7 @@ def test_should_500_if_add_account_raise_exception(
     mock_add: MagicMock, sut: SignUpController
 ):
     mock_add.side_effect = Exception()
-    request = Request(
+    request = HttpRequest(
         body={
             "name": "John Doe",
             "email": "test@example.com",
@@ -204,7 +204,7 @@ def test_should_500_if_add_account_raise_exception(
 
 
 def test_should_200_if_data_is_valid(sut: SignUpController):
-    request = Request(
+    request = HttpRequest(
         body={
             "name": "John Doe",
             "email": "test@example.com",

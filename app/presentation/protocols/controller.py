@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 
-from .http import Request, Response
+from .http import HttpRequest, HttpResponse
 
 
 class Controller(ABC):
     @abstractmethod
-    def handle(self, request: Request) -> Response:
+    def handle(self, request: HttpRequest) -> HttpResponse:
         """Abstract method for handling a request"""

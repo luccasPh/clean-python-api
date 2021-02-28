@@ -2,7 +2,7 @@ from dataclasses import asdict
 
 from app.domain import AddAccount
 from app.domain import AddAccountModel
-from ..protocols.http import Request, Response
+from ..protocols.http import HttpRequest, HttpResponse
 from ..protocols.email_validator import EmailValidator
 from ..protocols.controller import Controller
 from ..errors.missing_param_error import MissingParamError
@@ -16,7 +16,7 @@ class SignUpController(Controller):
         self._email_validator = email_validator
         self._add_account = add_account
 
-    def handle(self, request: Request) -> Response:
+    def handle(self, request: HttpRequest) -> HttpResponse:
         try:
             data = request.body
             required_fields = ("name", "email", "password", "password_confirmation")
