@@ -1,8 +1,13 @@
 from mock import patch, MagicMock
 
-from app.presentation import Controller, HttpRequest, HttpResponse
+from app.presentation import (
+    Controller,
+    HttpRequest,
+    HttpResponse,
+    ServerError,
+    server_error,
+)
 from app.main import log_controller_handler
-from app.presentation import ServerError, server_error
 
 
 class FakeClass:
