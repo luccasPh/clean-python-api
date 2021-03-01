@@ -1,4 +1,5 @@
 import pytest
+import mongomock
 from mock import patch, MagicMock
 
 from app.domain import AccountModel, AddAccount, AddAccountModel
@@ -27,9 +28,9 @@ class AddAccountStub(AddAccount):
 
 @pytest.fixture
 def sut():
-    email_validator = EmailValidatorStub()
+    email_validator_stub = EmailValidatorStub()
     add_account_stub = AddAccountStub()
-    sut = SignUpController(email_validator, add_account_stub)
+    sut = SignUpController(email_validator_stub, add_account_stub)
     yield sut
 
 
@@ -133,11 +134,13 @@ def test_should_call_email_validator_correct_value(
     mock_is_valid.assert_called_with("test@example.com")
 
 
+@patch("app.main.decorators.log.get_collection")
 @patch.object(EmailValidatorStub, "is_valid")
 def test_should_500_if_email_validator_raise_exception(
-    mock_is_valid: MagicMock, sut: SignUpController
+    mock_is_valid: MagicMock, mock_get_collection: MagicMock, sut: SignUpController
 ):
-    mock_is_valid.side_effect = Exception()
+    mock_is_valid.side_effect = Exception("Error on matrix")
+    mock_get_collection.return_value = mongomock.MongoClient().db.collection
     request = HttpRequest(
         body={
             "name": "John Doe",
@@ -155,6 +158,13 @@ def test_should_500_if_email_validator_raise_exception(
 def test_should_call_add_account_correct_values(
     mock_add: MagicMock, sut: SignUpController
 ):
+    mock_add.return_value = AccountModel(
+        id="valid_id",
+        name="valid_name",
+        email="valid_email@example.com",
+        hashed_password="valid_password_hash",
+    )
+
     request = HttpRequest(
         body={
             "name": "John Doe",
@@ -172,11 +182,13 @@ def test_should_call_add_account_correct_values(
     mock_add.assert_called_with(expected)
 
 
+@patch("app.main.decorators.log.get_collection")
 @patch.object(AddAccountStub, "add")
 def test_should_500_if_add_account_raise_exception(
-    mock_add: MagicMock, sut: SignUpController
+    mock_add: MagicMock, mock_get_collection: MagicMock, sut: SignUpController
 ):
-    mock_add.side_effect = Exception()
+    mock_add.side_effect = Exception("Error on matrix")
+    mock_get_collection.return_value = mongomock.MongoClient().db.collection
     request = HttpRequest(
         body={
             "name": "John Doe",
