@@ -11,17 +11,26 @@ from ..errors.missing_param_error import MissingParamError
 from ..errors.invalid_param_error import InvalidParamError
 from ..errors.server_error import ServerError
 from ..helpers.http_herlper import bad_request, server_error, ok
+from ..helpers.validators.validation import Validation
 
 
 class SignUpController(Controller):
-    def __init__(self, email_validator: EmailValidator, add_account: AddAccount):
+    def __init__(
+        self,
+        email_validator: EmailValidator,
+        add_account: AddAccount,
+        validation: Validation,
+    ):
         self._email_validator = email_validator
         self._add_account = add_account
+        self._validation = validation
 
     @log_controller_handler
     def handle(self, request: HttpRequest) -> HttpResponse:
         try:
             data = request.body
+            print(data)
+            self._validation.validate(data)
             required_fields = ("name", "email", "password", "password_confirmation")
             for field in required_fields:
                 if not data.get(field):

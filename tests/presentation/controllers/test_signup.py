@@ -3,11 +3,7 @@ import mongomock
 from mock import patch, MagicMock
 
 from app.domain import AccountModel, AddAccount, AddAccountModel
-from app.presentation import (
-    SignUpController,
-    HttpRequest,
-    EmailValidator,
-)
+from app.presentation import SignUpController, HttpRequest, EmailValidator, Validation
 
 
 class EmailValidatorStub(EmailValidator):
@@ -26,11 +22,17 @@ class AddAccountStub(AddAccount):
         return AccountModel(**fake_account)
 
 
+class ValidationStub(Validation):
+    def validate(self, input):
+        ...
+
+
 @pytest.fixture
 def sut():
     email_validator_stub = EmailValidatorStub()
     add_account_stub = AddAccountStub()
-    sut = SignUpController(email_validator_stub, add_account_stub)
+    validation_stub = ValidationStub()
+    sut = SignUpController(email_validator_stub, add_account_stub, validation_stub)
     yield sut
 
 
@@ -220,3 +222,19 @@ def test_should_200_if_data_is_valid(sut: SignUpController):
     response = sut.handle(request)
     assert response.status_code == 200
     assert response.body == expected
+
+
+@patch.object(ValidationStub, "validate")
+def test_should_call_validation_correct_value(
+    mock_validate: MagicMock, sut: SignUpController
+):
+    request = HttpRequest(
+        body={
+            "name": "John Doe",
+            "email": "test@example.com",
+            "password": "test",
+            "password_confirmation": "test",
+        }
+    )
+    sut.handle(request)
+    mock_validate.assert_called_with(request.body)

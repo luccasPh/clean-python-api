@@ -7,3 +7,4 @@ from app.presentation.protocols.http import *
 from app.presentation.helpers.http_herlper import *
 from app.presentation.controllers.signup import SignUpController
 from app.presentation.controllers.login import LoginController
+from app.presentation.helpers.validators.validation import Validation
