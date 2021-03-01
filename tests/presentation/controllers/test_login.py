@@ -31,6 +31,15 @@ def test_should_400_if_no_password_provided(sut: LoginController):
 
 
 @patch.object(EmailValidatorStub, "is_valid")
+def test_should_400_if_an_invalid_email(mock_is_valid: MagicMock, sut: LoginController):
+    mock_is_valid.return_value = False
+    request = HttpRequest(body=dict(email="email@example.com", password="password"))
+    response = sut.handle(request)
+    assert response.status_code == 400
+    assert response.body["message"] == "Invalid param: email"
+
+
+@patch.object(EmailValidatorStub, "is_valid")
 def test_should_call_email_validator_correct_value(
     mock_is_valid: MagicMock, sut: LoginController
 ):

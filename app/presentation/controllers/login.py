@@ -1,8 +1,9 @@
 from ..protocols.controller import Controller
 from ..protocols.http import HttpRequest, HttpResponse
 from ..errors.missing_param_error import MissingParamError
-from ..helpers.http_herlper import bad_request
+from ..errors.invalid_param_error import InvalidParamError
 from ..protocols.email_validator import EmailValidator
+from ..helpers.http_herlper import bad_request
 
 
 class LoginController(Controller):
@@ -17,4 +18,6 @@ class LoginController(Controller):
         if not data.get("password"):
             return bad_request(MissingParamError("password"))
 
-        self._email_validator.is_valid(data.get("email"))
+        is_valid = self._email_validator.is_valid(data.get("email"))
+        if not is_valid:
+            return bad_request(InvalidParamError("email"))
