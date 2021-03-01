@@ -76,3 +76,14 @@ def test_should_call_authentication_correct_value(
     request = HttpRequest(body=dict(email="email@example.com", password="password"))
     sut.handle(request)
     mock_auth.assert_called_with({"email": "email@example.com", "password": "password"})
+
+
+@patch.object(AuthenticationStub, "auth")
+def test_should_401_if_invalid_credentials_are_provided(
+    mock_auth: MagicMock, sut: LoginController
+):
+    mock_auth.return_value = None
+    request = HttpRequest(body=dict(email="email@example.com", password="password"))
+    response = sut.handle(request)
+    assert response.status_code == 401
+    assert response.body["message"] == "Unauthorized"

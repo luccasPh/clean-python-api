@@ -5,6 +5,10 @@ def bad_request(error: Exception) -> HttpResponse:
     return HttpResponse(status_code=400, body={"message": error.args[0]})
 
 
+def unauthorized(error: Exception) -> HttpResponse:
+    return HttpResponse(status_code=401, body={"message": error.args[0]})
+
+
 def server_error(error: Exception, traceback: str) -> HttpResponse:
     return HttpResponse(
         status_code=500, body={"message": error.args[0], "traceback": traceback}

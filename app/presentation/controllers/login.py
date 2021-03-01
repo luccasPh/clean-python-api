@@ -6,8 +6,9 @@ from ..protocols.http import HttpRequest, HttpResponse
 from ..errors.missing_param_error import MissingParamError
 from ..errors.invalid_param_error import InvalidParamError
 from ..errors.server_error import ServerError
+from ..errors.unauthorized_error import UnauthorizedError
 from ..protocols.email_validator import EmailValidator
-from ..helpers.http_herlper import bad_request, server_error
+from ..helpers.http_herlper import bad_request, server_error, unauthorized
 
 
 class LoginController(Controller):
@@ -27,6 +28,9 @@ class LoginController(Controller):
             if not is_valid:
                 return bad_request(InvalidParamError("email"))
 
-            self._authentication.auth(data)
+            access_token = self._authentication.auth(data)
+            if not access_token:
+                return unauthorized(UnauthorizedError())
+
         except Exception:
             return server_error(ServerError(), traceback.format_exc())
