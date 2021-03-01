@@ -1,4 +1,5 @@
 import pytest
+import mongomock
 from mock import patch, MagicMock
 
 from app.presentation import LoginController, HttpRequest, EmailValidator
@@ -46,3 +47,16 @@ def test_should_call_email_validator_correct_value(
     request = HttpRequest(body=dict(email="email@example.com", password="password"))
     sut.handle(request)
     mock_is_valid.assert_called_with("email@example.com")
+
+
+@patch("app.main.decorators.log.get_collection")
+@patch.object(EmailValidatorStub, "is_valid")
+def test_should_500_if_email_validator_raise_exception(
+    mock_is_valid: MagicMock, mock_get_collection: MagicMock, sut: LoginController
+):
+    mock_is_valid.side_effect = Exception("Error on matrix")
+    mock_get_collection.return_value = mongomock.MongoClient().db.collection
+    request = HttpRequest(body=dict(email="email@example.com", password="password"))
+    response = sut.handle(request)
+    assert response.status_code == 500
+    assert response.body["message"] == "Internal server error"
