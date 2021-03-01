@@ -3,6 +3,7 @@ import mongomock
 from mock import patch, MagicMock
 
 from app.presentation import LoginController, HttpRequest, EmailValidator
+from app.domain import Authentication
 
 
 class EmailValidatorStub(EmailValidator):
@@ -10,10 +11,16 @@ class EmailValidatorStub(EmailValidator):
         return True
 
 
+class AuthenticationStub(Authentication):
+    def auth(self, valid_data: dict) -> str:
+        return "access_token"
+
+
 @pytest.fixture
 def sut():
     email_validator_stub = EmailValidatorStub()
-    sut = LoginController(email_validator_stub)
+    authentication_stub = AuthenticationStub()
+    sut = LoginController(email_validator_stub, authentication_stub)
     yield sut
 
 
@@ -60,3 +67,12 @@ def test_should_500_if_email_validator_raise_exception(
     response = sut.handle(request)
     assert response.status_code == 500
     assert response.body["message"] == "Internal server error"
+
+
+@patch.object(AuthenticationStub, "auth")
+def test_should_call_authentication_correct_value(
+    mock_auth: MagicMock, sut: LoginController
+):
+    request = HttpRequest(body=dict(email="email@example.com", password="password"))
+    sut.handle(request)
+    mock_auth.assert_called_with({"email": "email@example.com", "password": "password"})
