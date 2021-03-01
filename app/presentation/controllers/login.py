@@ -8,7 +8,7 @@ from ..errors.invalid_param_error import InvalidParamError
 from ..errors.server_error import ServerError
 from ..errors.unauthorized_error import UnauthorizedError
 from ..protocols.email_validator import EmailValidator
-from ..helpers.http_herlper import bad_request, server_error, unauthorized
+from ..helpers.http_herlper import bad_request, ok, server_error, unauthorized
 
 
 class LoginController(Controller):
@@ -32,5 +32,6 @@ class LoginController(Controller):
             if not access_token:
                 return unauthorized(UnauthorizedError())
 
+            return ok(dict(access_token=access_token))
         except Exception:
             return server_error(ServerError(), traceback.format_exc())

@@ -100,3 +100,10 @@ def test_should_500_if_authentication__raise_exception(
     response = sut.handle(request)
     assert response.status_code == 500
     assert response.body["message"] == "Internal server error"
+
+
+def test_should_200_if_valid_credentials_are_provided(sut: LoginController):
+    request = HttpRequest(body=dict(email="email@example.com", password="password"))
+    response = sut.handle(request)
+    assert response.status_code == 200
+    assert response.body["access_token"] == "access_token"
