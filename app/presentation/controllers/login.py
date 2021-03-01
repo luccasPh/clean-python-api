@@ -6,4 +6,9 @@ from ..helpers.http_herlper import bad_request
 
 class LoginController(Controller):
     def handle(self, request: HttpRequest) -> HttpResponse:
-        return bad_request(MissingParamError("email"))
+        print(request.body)
+        if not request.body.get("email"):
+            return bad_request(MissingParamError("email"))
+
+        if not request.body.get("password"):
+            return bad_request(MissingParamError("password"))
