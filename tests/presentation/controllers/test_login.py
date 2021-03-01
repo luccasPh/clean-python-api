@@ -87,3 +87,16 @@ def test_should_401_if_invalid_credentials_are_provided(
     response = sut.handle(request)
     assert response.status_code == 401
     assert response.body["message"] == "Unauthorized"
+
+
+@patch("app.main.decorators.log.get_collection")
+@patch.object(AuthenticationStub, "auth")
+def test_should_500_if_authentication__raise_exception(
+    mock_auth: MagicMock, mock_get_collection: MagicMock, sut: LoginController
+):
+    mock_auth.side_effect = Exception("Error on matrix")
+    mock_get_collection.return_value = mongomock.MongoClient().db.collection
+    request = HttpRequest(body=dict(email="email@example.com", password="password"))
+    response = sut.handle(request)
+    assert response.status_code == 500
+    assert response.body["message"] == "Internal server error"
