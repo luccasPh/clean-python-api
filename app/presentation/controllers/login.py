@@ -12,11 +12,10 @@ class LoginController(Controller):
 
     def handle(self, request: HttpRequest) -> HttpResponse:
         data = request.body
-        if not data.get("email"):
-            return bad_request(MissingParamError("email"))
-
-        if not data.get("password"):
-            return bad_request(MissingParamError("password"))
+        required_fields = ("email", "password")
+        for field in required_fields:
+            if not data.get(field):
+                return bad_request(MissingParamError(field))
 
         is_valid = self._email_validator.is_valid(data.get("email"))
         if not is_valid:
