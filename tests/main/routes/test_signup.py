@@ -2,7 +2,7 @@ import mongomock
 from mock import MagicMock, patch
 from fastapi.testclient import TestClient
 
-from app.main import app
+from app.main.config.app import app
 
 client = TestClient(app)
 
