@@ -3,7 +3,13 @@ import mongomock
 from mock import patch, MagicMock
 
 from app.domain import AccountModel, AddAccount, AddAccountModel
-from app.presentation import SignUpController, HttpRequest, EmailValidator, Validation
+from app.presentation import (
+    SignUpController,
+    HttpRequest,
+    EmailValidator,
+    Validation,
+    MissingParamError,
+)
 
 
 class EmailValidatorStub(EmailValidator):
@@ -238,3 +244,21 @@ def test_should_call_validation_correct_value(
     )
     sut.handle(request)
     mock_validate.assert_called_with(request.body)
+
+
+@patch.object(ValidationStub, "validate")
+def test_should_400_if_validation_returns_error(
+    mock_validate: MagicMock, sut: SignUpController
+):
+    mock_validate.return_value = MissingParamError("any_field")
+    request = HttpRequest(
+        body={
+            "name": "John Doe",
+            "email": "test@example.com",
+            "password": "test",
+            "password_confirmation": "test",
+        }
+    )
+    response = sut.handle(request)
+    assert response.status_code == 400
+    assert response.body == dict(message="Missing param: any_field")

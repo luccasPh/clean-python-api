@@ -30,7 +30,10 @@ class SignUpController(Controller):
         try:
             data = request.body
             print(data)
-            self._validation.validate(data)
+            is_error = self._validation.validate(data)
+            if is_error:
+                return bad_request(is_error)
+
             required_fields = ("name", "email", "password", "password_confirmation")
             for field in required_fields:
                 if not data.get(field):
