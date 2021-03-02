@@ -83,3 +83,15 @@ def test_should_raise_exception_if__hash_compare_raise(
     with pytest.raises(Exception) as excinfo:
         assert sut.auth(authentication)
     assert type(excinfo.value) is Exception
+
+
+@patch.object(HashComparerStub, "compare")
+def test_should_return_none_if_hash_compare_returns_false(
+    mock_compare: MagicMock, sut: DbAuthentication
+):
+    mock_compare.return_value = False
+    authentication = AuthenticationModel(
+        email="valid_email@example.com", password="valid_password"
+    )
+    access_token = sut.auth(authentication)
+    assert not access_token
