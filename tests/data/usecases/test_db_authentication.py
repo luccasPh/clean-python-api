@@ -6,7 +6,7 @@ from app.data import (
     LoadAccountByEmailRepo,
     DbAuthentication,
     HashComparer,
-    TokenGenerator,
+    Encrypter,
     UpdateAccessTokenRepo,
 )
 
@@ -27,8 +27,8 @@ class HashComparerStub(HashComparer):
         return True
 
 
-class TokenGeneratorStub(TokenGenerator):
-    def generate(self, id: str) -> str:
+class EncrypterStub(Encrypter):
+    def encrypt(self, value: str) -> str:
         return "access_token"
 
 
@@ -41,7 +41,7 @@ class UpdateAccessTokenRepoStub(UpdateAccessTokenRepo):
 def sut():
     load_account_by_email_repo_stub = LoadAccountByEmailRepoStub()
     hash_comparer_stub = HashComparerStub()
-    token_comparer_stub = TokenGeneratorStub()
+    token_comparer_stub = EncrypterStub()
     update_access_token_repo_stub = UpdateAccessTokenRepoStub()
     return DbAuthentication(
         load_account_by_email_repo_stub,
@@ -120,22 +120,22 @@ def test_should_return_none_if_hash_compare_returns_false(
     assert not access_token
 
 
-@patch.object(TokenGeneratorStub, "generate")
-def test_should_call_token_generator_correct_value(
-    mock_generate: MagicMock, sut: DbAuthentication
+@patch.object(EncrypterStub, "encrypt")
+def test_should_call_encrypter_correct_value(
+    mock_encrypt: MagicMock, sut: DbAuthentication
 ):
     authentication = AuthenticationModel(
         email="valid_email@example.com", password="valid_password"
     )
     sut.auth(authentication)
-    mock_generate.assert_called_with("valid_id")
+    mock_encrypt.assert_called_with("valid_id")
 
 
-@patch.object(TokenGeneratorStub, "generate")
-def test_should_raise_exception_if_token_generator_raise(
-    mock_generate: MagicMock, sut: DbAuthentication
+@patch.object(EncrypterStub, "encrypt")
+def test_should_raise_exception_if_encrypter_raise(
+    mock_encrypt: MagicMock, sut: DbAuthentication
 ):
-    mock_generate.side_effect = Exception("Error on matrix")
+    mock_encrypt.side_effect = Exception("Error on matrix")
     authentication = AuthenticationModel(
         email="valid_email@example.com", password="valid_password"
     )
