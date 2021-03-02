@@ -161,3 +161,16 @@ def test_should_call_update_access_token_repo_correct_values(
     )
     sut.auth(authentication)
     mock_update.assert_called_with("valid_id", "access_token")
+
+
+@patch.object(UpdateAccessTokenRepoStub, "update")
+def test_should_raise_exception_if_update_access_token_repo_raise(
+    mock_update: MagicMock, sut: DbAuthentication
+):
+    mock_update.side_effect = Exception("Error on matrix")
+    authentication = AuthenticationModel(
+        email="valid_email@example.com", password="valid_password"
+    )
+    with pytest.raises(Exception) as excinfo:
+        assert sut.auth(authentication)
+    assert type(excinfo.value) is Exception
