@@ -1,4 +1,4 @@
-from .validation import Validation
+from ...protocols.validation import Validation
 from ...errors.missing_param_error import MissingParamError
 
 

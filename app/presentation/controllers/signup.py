@@ -10,7 +10,7 @@ from ..protocols.controller import Controller
 from ..errors.invalid_param_error import InvalidParamError
 from ..errors.server_error import ServerError
 from ..helpers.http.http_herlper import bad_request, server_error, ok
-from ..helpers.validators.validation import Validation
+from ..protocols.validation import Validation
 
 
 class SignUpController(Controller):
