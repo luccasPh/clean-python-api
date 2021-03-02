@@ -15,3 +15,11 @@ def test_should_return_missing_param_error_if_validation_fails(
     input = dict(field="other_field")
     is_error = sut.validate(input)
     assert is_error.args[0] == "Missing param: any_field"
+
+
+def test_should_not_return_if_validation_succeeds(
+    sut: RequiredFieldValidation,
+):
+    input = dict(any_field="any_field")
+    is_error = sut.validate(input)
+    assert not is_error
