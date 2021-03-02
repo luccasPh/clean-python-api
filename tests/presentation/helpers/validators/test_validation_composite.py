@@ -45,9 +45,9 @@ def test_should_return_the_first_error_if_many_validation_fails(
     assert excinfo.value.args[0] == "first error"
 
 
-# def test_should_not_return_if_all_validation_succeeds(
-#     sut: ValidationComposite,
-# ):
-#     input = dict(field="field")
-#     is_error = sut.validate(input)
-#     assert not is_error
+def test_should_not_return_if_all_validation_succeeds(
+    sut: ValidationComposite,
+):
+    input = dict(field="field")
+    is_error = sut.validate(input)
+    assert not is_error
