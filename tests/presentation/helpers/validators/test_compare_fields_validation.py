@@ -17,9 +17,9 @@ def test_should_return_invalid_param_error_if_validation_fails(
     assert is_error.args[0] == "Invalid param: field_2"
 
 
-# def test_should_not_return_if_validation_succeeds(
-#     sut: CompareFieldsValidation,
-# ):
-#     input = dict(any_field="any_field")
-#     is_error = sut.validate(input)
-#     assert not is_error
+def test_should_not_return_if_validation_succeeds(
+    sut: CompareFieldsValidation,
+):
+    input = dict(field_1="value", field_2="value")
+    is_error = sut.validate(input)
+    assert not is_error
