@@ -1,4 +1,8 @@
-from app.presentation import ValidationComposite, RequiredFieldValidation
+from app.presentation import (
+    ValidationComposite,
+    RequiredFieldValidation,
+    CompareFieldsValidation,
+)
 
 
 def make_signup_validation():
@@ -8,5 +12,6 @@ def make_signup_validation():
             RequiredFieldValidation("email"),
             RequiredFieldValidation("password"),
             RequiredFieldValidation("password_confirmation"),
+            CompareFieldsValidation("password", "password_confirmation"),
         ]
     )

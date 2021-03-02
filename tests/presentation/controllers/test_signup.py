@@ -42,20 +42,6 @@ def sut():
     yield sut
 
 
-def test_should_400_if_password_confirmation_fails(sut: SignUpController):
-    request = HttpRequest(
-        body={
-            "name": "John Doe",
-            "email": "invalid@example.com",
-            "password": "test",
-            "password_confirmation": "test_test",
-        }
-    )
-    response = sut.handle(request)
-    assert response.status_code == 400
-    assert response.body["message"] == "Invalid param: password_confirmation"
-
-
 @patch.object(EmailValidatorStub, "is_valid")
 def test_should_400_if_invalid_email_provided(
     mock_is_valid: MagicMock, sut: SignUpController

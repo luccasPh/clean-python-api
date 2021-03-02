@@ -8,8 +8,9 @@ def test_should_call_validation_composite_with_all_validations():
         "RequiredFieldValidation: email",
         "RequiredFieldValidation: password",
         "RequiredFieldValidation: password_confirmation",
+        "CompareFieldsValidation: password -> password_confirmation",
     ]
-
+    assert len(expected) == len(validation_composite.validations)
     assert not any(
         x != str(y) for x, y in zip(expected, validation_composite.validations)
     )
