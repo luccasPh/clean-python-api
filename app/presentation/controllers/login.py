@@ -3,30 +3,23 @@ import traceback
 from app.domain import Authentication, AuthenticationModel
 from ..protocols.controller import Controller
 from ..protocols.http import HttpRequest, HttpResponse
-from ..errors.missing_param_error import MissingParamError
-from ..errors.invalid_param_error import InvalidParamError
 from ..errors.server_error import ServerError
 from ..errors.unauthorized_error import UnauthorizedError
-from ..protocols.email_validator import EmailValidator
+from ..protocols.validation import Validation
 from ..helpers.http.http_herlper import bad_request, ok, server_error, unauthorized
 
 
 class LoginController(Controller):
-    def __init__(self, email_validator: EmailValidator, authentication: Authentication):
-        self._email_validator = email_validator
+    def __init__(self, authentication: Authentication, validation: Validation):
         self._authentication = authentication
+        self._validation = validation
 
     def handle(self, request: HttpRequest) -> HttpResponse:
         try:
             data = request.body
-            required_fields = ("email", "password")
-            for field in required_fields:
-                if not data.get(field):
-                    return bad_request(MissingParamError(field))
-
-            is_valid = self._email_validator.is_valid(data.get("email"))
-            if not is_valid:
-                return bad_request(InvalidParamError("email"))
+            is_error = self._validation.validate(data)
+            if is_error:
+                return bad_request(is_error)
 
             access_token = self._authentication.auth(AuthenticationModel(**data))
             if not access_token:

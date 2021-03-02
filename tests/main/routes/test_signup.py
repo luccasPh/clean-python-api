@@ -7,7 +7,7 @@ from app.main.config.app import app
 client = TestClient(app)
 
 
-@patch("app.main.factories.signup.get_collection")
+@patch("app.main.factories.signup.signup.get_collection")
 def test_should_return_an_account(test_get_collection: MagicMock):
     test_get_collection.return_value = mongomock.MongoClient().db.collection
     response = client.post(
