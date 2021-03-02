@@ -1,4 +1,4 @@
-from ..protocols.http import HttpResponse
+from ...protocols.http import HttpResponse
 
 
 def bad_request(error: Exception) -> HttpResponse:
