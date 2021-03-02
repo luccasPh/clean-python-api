@@ -132,3 +132,11 @@ def test_should_raise_exception_if_token_generator_raise(
     with pytest.raises(Exception) as excinfo:
         assert sut.auth(authentication)
     assert type(excinfo.value) is Exception
+
+
+def test_should_return_an_access_token_on_success(sut: DbAuthentication):
+    authentication = AuthenticationModel(
+        email="valid_email@example.com", password="valid_password"
+    )
+    access_token = sut.auth(authentication)
+    assert access_token == "access_token"

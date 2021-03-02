@@ -20,4 +20,4 @@ class DbAuthentication(Authentication):
                 authentication.password, account.hashed_password
             )
             if result:
-                self._token_generator.generate(account.id)
+                return self._token_generator.generate(account.id)
