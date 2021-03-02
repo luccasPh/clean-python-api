@@ -6,15 +6,9 @@ from app.domain import AccountModel, AddAccount, AddAccountModel
 from app.presentation import (
     SignUpController,
     HttpRequest,
-    EmailValidator,
     Validation,
     MissingParamError,
 )
-
-
-class EmailValidatorStub(EmailValidator):
-    def is_valid(self, email: str) -> bool:
-        return True
 
 
 class AddAccountStub(AddAccount):
@@ -35,65 +29,10 @@ class ValidationStub(Validation):
 
 @pytest.fixture
 def sut():
-    email_validator_stub = EmailValidatorStub()
     add_account_stub = AddAccountStub()
     validation_stub = ValidationStub()
-    sut = SignUpController(email_validator_stub, add_account_stub, validation_stub)
+    sut = SignUpController(add_account_stub, validation_stub)
     yield sut
-
-
-@patch.object(EmailValidatorStub, "is_valid")
-def test_should_400_if_invalid_email_provided(
-    mock_is_valid: MagicMock, sut: SignUpController
-):
-    mock_is_valid.return_value = False
-    request = HttpRequest(
-        body={
-            "name": "John Doe",
-            "email": "invalid@example.com",
-            "password": "test",
-            "password_confirmation": "test",
-        }
-    )
-    response = sut.handle(request)
-    assert response.status_code == 400
-    assert response.body["message"] == "Invalid param: email"
-
-
-@patch.object(EmailValidatorStub, "is_valid")
-def test_should_call_email_validator_correct_value(
-    mock_is_valid: MagicMock, sut: SignUpController
-):
-    request = HttpRequest(
-        body={
-            "name": "John Doe",
-            "email": "test@example.com",
-            "password": "test",
-            "password_confirmation": "test",
-        }
-    )
-    sut.handle(request)
-    mock_is_valid.assert_called_with("test@example.com")
-
-
-@patch("app.main.decorators.log.get_collection")
-@patch.object(EmailValidatorStub, "is_valid")
-def test_should_500_if_email_validator_raise_exception(
-    mock_is_valid: MagicMock, mock_get_collection: MagicMock, sut: SignUpController
-):
-    mock_is_valid.side_effect = Exception("Error on matrix")
-    mock_get_collection.return_value = mongomock.MongoClient().db.collection
-    request = HttpRequest(
-        body={
-            "name": "John Doe",
-            "email": "test@example.com",
-            "password": "test",
-            "password_confirmation": "test",
-        }
-    )
-    response = sut.handle(request)
-    assert response.status_code == 500
-    assert response.body["message"] == "Internal server error"
 
 
 @patch.object(AddAccountStub, "add")

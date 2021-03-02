@@ -5,22 +5,14 @@ from app.domain import AddAccount
 from app.domain import AddAccountModel
 from app.main import log_controller_handler
 from ..protocols.http import HttpRequest, HttpResponse
-from ..protocols.email_validator import EmailValidator
 from ..protocols.controller import Controller
-from ..errors.invalid_param_error import InvalidParamError
 from ..errors.server_error import ServerError
 from ..helpers.http.http_herlper import bad_request, server_error, ok
 from ..protocols.validation import Validation
 
 
 class SignUpController(Controller):
-    def __init__(
-        self,
-        email_validator: EmailValidator,
-        add_account: AddAccount,
-        validation: Validation,
-    ):
-        self._email_validator = email_validator
+    def __init__(self, add_account: AddAccount, validation: Validation):
         self._add_account = add_account
         self._validation = validation
 
@@ -28,14 +20,9 @@ class SignUpController(Controller):
     def handle(self, request: HttpRequest) -> HttpResponse:
         try:
             data = request.body
-            print(data)
             is_error = self._validation.validate(data)
             if is_error:
                 return bad_request(is_error)
-
-            is_valid = self._email_validator.is_valid(data.get("email"))
-            if not is_valid:
-                return bad_request(InvalidParamError("email"))
 
             data.pop("password_confirmation")
             account = self._add_account.add(AddAccountModel(**data))

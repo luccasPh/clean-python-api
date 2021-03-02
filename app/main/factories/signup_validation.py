@@ -1,7 +1,9 @@
+from app.utils.email_validator_adapter import EmailValidatorAdapter
 from app.presentation import (
     ValidationComposite,
     RequiredFieldValidation,
     CompareFieldsValidation,
+    EmailValidation,
 )
 
 
@@ -13,5 +15,8 @@ def make_signup_validation():
             RequiredFieldValidation("password"),
             RequiredFieldValidation("password_confirmation"),
             CompareFieldsValidation("password", "password_confirmation"),
+            EmailValidation(
+                "email", EmailValidatorAdapter(check_mx=False, skip_smtp=True)
+            ),
         ]
     )

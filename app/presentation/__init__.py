@@ -15,3 +15,6 @@ from app.presentation.helpers.validators.required_field_validation import (
 from app.presentation.helpers.validators.compare_fields_validation import (
     CompareFieldsValidation,
 )
+from app.presentation.helpers.validators.email_validation import (
+    EmailValidation,
+)
