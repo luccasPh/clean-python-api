@@ -5,8 +5,8 @@ from app.data import AddAccountRepo, DbAddAccount
 from app.domain import AddAccountModel, AccountModel
 
 
-class EncrypterStub:
-    def encrypt(self, value: str) -> str:
+class HasherStub:
+    def hash(self, value: str) -> str:
         return "hashed_password"
 
 
@@ -23,26 +23,24 @@ class AddAccountRepoStub(AddAccountRepo):
 
 @pytest.fixture
 def sut():
-    encrypter_stub = EncrypterStub()
+    hasher_stub = HasherStub()
     add_account_repo_stub = AddAccountRepoStub()
-    sut = DbAddAccount(encrypter_stub, add_account_repo_stub)
+    sut = DbAddAccount(hasher_stub, add_account_repo_stub)
     yield sut
 
 
-@patch.object(EncrypterStub, "encrypt")
-def test_should_call_encrypter_with_correct_value(
-    mock_encrypt: MagicMock, sut: DbAddAccount
-):
+@patch.object(HasherStub, "hash")
+def test_should_call_Hasher_with_correct_value(mock_hash: MagicMock, sut: DbAddAccount):
     account_data = AddAccountModel(
         name="valid_name", email="valid_email@example.com", password="valid_password"
     )
     sut.add(account_data)
-    mock_encrypt.assert_called_with("valid_password")
+    mock_hash.assert_called_with("valid_password")
 
 
-@patch.object(EncrypterStub, "encrypt")
-def test_should_raise_if_encrypter_raise(mock_encrypt: MagicMock, sut: DbAddAccount):
-    mock_encrypt.side_effect = Exception()
+@patch.object(HasherStub, "hash")
+def test_should_raise_if_Hasher_raise(mock_hash: MagicMock, sut: DbAddAccount):
+    mock_hash.side_effect = Exception()
     account_data = AddAccountModel(
         name="valid_name", email="valid_email@example.com", password="valid_password"
     )

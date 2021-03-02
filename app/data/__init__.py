@@ -1,4 +1,4 @@
-from app.data.protocols.cryptography.encrypter import Encrypter
+from app.data.protocols.cryptography.hasher import Hasher
 from app.data.protocols.cryptography.hash_comparer import HashComparer
 from app.data.protocols.cryptography.token_generator import TokenGenerator
 from app.data.protocols.repository.add_account_repo import AddAccountRepo
