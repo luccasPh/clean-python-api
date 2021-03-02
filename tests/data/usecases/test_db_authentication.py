@@ -119,3 +119,16 @@ def test_should_call_token_generator_correct_value(
     )
     sut.auth(authentication)
     mock_generate.assert_called_with("valid_id")
+
+
+@patch.object(TokenGeneratorStub, "generate")
+def test_should_raise_exception_if_token_generator_raise(
+    mock_generate: MagicMock, sut: DbAuthentication
+):
+    mock_generate.side_effect = Exception("Error on matrix")
+    authentication = AuthenticationModel(
+        email="valid_email@example.com", password="valid_password"
+    )
+    with pytest.raises(Exception) as excinfo:
+        assert sut.auth(authentication)
+    assert type(excinfo.value) is Exception
