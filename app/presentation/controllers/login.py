@@ -1,6 +1,6 @@
 import traceback
 
-from app.domain import Authentication
+from app.domain import Authentication, AuthenticationModel
 from ..protocols.controller import Controller
 from ..protocols.http import HttpRequest, HttpResponse
 from ..errors.missing_param_error import MissingParamError
@@ -28,7 +28,7 @@ class LoginController(Controller):
             if not is_valid:
                 return bad_request(InvalidParamError("email"))
 
-            access_token = self._authentication.auth(data)
+            access_token = self._authentication.auth(AuthenticationModel(**data))
             if not access_token:
                 return unauthorized(UnauthorizedError())
 
