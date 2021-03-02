@@ -45,3 +45,12 @@ def test_should_call_compare_with_correct_values(
     hash = "any_hash"
     sut.compare(value, hash)
     mock_checkpw.assert_called_with(value.encode("utf-8"), hash.encode("utf-8"))
+
+
+@patch("app.infra.cryptography.bcrypt_adapter.checkpw")
+def test_should_return_true_on_compare_success(
+    mock_checkpw: MagicMock, sut: BcryptAdapter
+):
+    mock_checkpw.return_value = True
+    result = sut.compare("any_value", "any_hash")
+    assert result
