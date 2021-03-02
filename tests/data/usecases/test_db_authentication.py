@@ -2,7 +2,12 @@ import pytest
 from mock import patch, MagicMock
 
 from app.domain import AccountModel, AuthenticationModel
-from app.data import LoadAccountByEmailRepo, DbAuthentication, HashComparer
+from app.data import (
+    LoadAccountByEmailRepo,
+    DbAuthentication,
+    HashComparer,
+    TokenGenerator,
+)
 
 
 class LoadAccountByEmailRepoStub(LoadAccountByEmailRepo):
@@ -21,11 +26,19 @@ class HashComparerStub(HashComparer):
         return True
 
 
+class TokenGeneratorStub(TokenGenerator):
+    def generate(self, id: str) -> str:
+        return "access_token"
+
+
 @pytest.fixture
 def sut():
     load_account_by_email_repo_stub = LoadAccountByEmailRepoStub()
     hash_comparer_stub = HashComparerStub()
-    return DbAuthentication(load_account_by_email_repo_stub, hash_comparer_stub)
+    token_comparer_stub = TokenGeneratorStub()
+    return DbAuthentication(
+        load_account_by_email_repo_stub, hash_comparer_stub, token_comparer_stub
+    )
 
 
 @patch.object(LoadAccountByEmailRepoStub, "load")
@@ -95,3 +108,14 @@ def test_should_return_none_if_hash_compare_returns_false(
     )
     access_token = sut.auth(authentication)
     assert not access_token
+
+
+@patch.object(TokenGeneratorStub, "generate")
+def test_should_call_token_generator_correct_value(
+    mock_generate: MagicMock, sut: DbAuthentication
+):
+    authentication = AuthenticationModel(
+        email="valid_email@example.com", password="valid_password"
+    )
+    sut.auth(authentication)
+    mock_generate.assert_called_with("valid_id")
