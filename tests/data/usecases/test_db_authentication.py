@@ -28,3 +28,16 @@ def test_should_call_loader_accout_by_email_correct_value(
 ):
     sut.auth(AuthenticationModel(email="valid_email@example.com", password="password"))
     mock_load_account_by_email_repo_stub.assert_called_with("valid_email@example.com")
+
+
+@patch.object(LoadAccountByEmailRepoStub, "load")
+def test_should_raise_if_loader_accout_by_email_raise(
+    mock_load: MagicMock, sut: DbAuthentication
+):
+    mock_load.side_effect = Exception("Error on matrix")
+    authentication = AuthenticationModel(
+        email="valid_email@example.com", password="valid_password"
+    )
+    with pytest.raises(Exception) as excinfo:
+        assert sut.auth(authentication)
+    assert type(excinfo.value) is Exception
