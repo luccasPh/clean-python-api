@@ -30,7 +30,9 @@ def test_should_return_hash_on_hash_success(mock_hashpw: MagicMock, sut: BcryptA
 
 
 @patch("app.infra.cryptography.bcrypt_adapter.hashpw")
-def test_should_raise_if_bcrypt_raise(mock_hashpw: MagicMock, sut: BcryptAdapter):
+def test_should_raise_exception_if_hash_raise(
+    mock_hashpw: MagicMock, sut: BcryptAdapter
+):
     mock_hashpw.side_effect = Exception()
     with pytest.raises(Exception) as excinfo:
         assert sut.hash("any_value")
@@ -63,3 +65,13 @@ def test_should_return_false_on_compare_fails(
     mock_checkpw.return_value = False
     result = sut.compare("any_value", "any_hash")
     assert not result
+
+
+@patch("app.infra.cryptography.bcrypt_adapter.checkpw")
+def test_should_raise_exception_if_compare_raise(
+    mock_checkpw: MagicMock, sut: BcryptAdapter
+):
+    mock_checkpw.side_effect = Exception()
+    with pytest.raises(Exception) as excinfo:
+        assert sut.compare("any_value", "any_hash")
+    assert type(excinfo.value) is Exception
