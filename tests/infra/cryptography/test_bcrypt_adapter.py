@@ -54,3 +54,12 @@ def test_should_return_true_on_compare_success(
     mock_checkpw.return_value = True
     result = sut.compare("any_value", "any_hash")
     assert result
+
+
+@patch("app.infra.cryptography.bcrypt_adapter.checkpw")
+def test_should_return_false_on_compare_fails(
+    mock_checkpw: MagicMock, sut: BcryptAdapter
+):
+    mock_checkpw.return_value = False
+    result = sut.compare("any_value", "any_hash")
+    assert not result
