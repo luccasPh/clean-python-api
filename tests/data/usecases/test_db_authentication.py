@@ -41,3 +41,15 @@ def test_should_raise_if_loader_accout_by_email_raise(
     with pytest.raises(Exception) as excinfo:
         assert sut.auth(authentication)
     assert type(excinfo.value) is Exception
+
+
+@patch.object(LoadAccountByEmailRepoStub, "load")
+def test_should_return_none_if_load_account_by_email_returns_none(
+    mock_load: MagicMock, sut: DbAuthentication
+):
+    mock_load.return_value = None
+    authentication = AuthenticationModel(
+        email="valid_email@example.com", password="valid_password"
+    )
+    access_token = sut.auth(authentication)
+    assert not access_token
