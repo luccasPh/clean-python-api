@@ -3,6 +3,7 @@ from app.data.protocols.cryptography.hash_comparer import HashComparer
 from app.data.protocols.cryptography.token_generator import TokenGenerator
 from app.data.protocols.repository.add_account_repo import AddAccountRepo
 from app.data.protocols.repository.log_error_repo import LogErrorRepo
+from app.data.protocols.repository.update_access_token_repo import UpdateAccessTokenRepo
 from app.data.protocols.repository.load_account_by_email_repo import (
     LoadAccountByEmailRepo,
 )

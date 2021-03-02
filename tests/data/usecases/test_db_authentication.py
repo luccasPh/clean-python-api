@@ -7,6 +7,7 @@ from app.data import (
     DbAuthentication,
     HashComparer,
     TokenGenerator,
+    UpdateAccessTokenRepo,
 )
 
 
@@ -31,13 +32,22 @@ class TokenGeneratorStub(TokenGenerator):
         return "access_token"
 
 
+class UpdateAccessTokenRepoStub(UpdateAccessTokenRepo):
+    def update(self, id: str, access_token: str):
+        ...
+
+
 @pytest.fixture
 def sut():
     load_account_by_email_repo_stub = LoadAccountByEmailRepoStub()
     hash_comparer_stub = HashComparerStub()
     token_comparer_stub = TokenGeneratorStub()
+    update_access_token_repo_stub = UpdateAccessTokenRepoStub()
     return DbAuthentication(
-        load_account_by_email_repo_stub, hash_comparer_stub, token_comparer_stub
+        load_account_by_email_repo_stub,
+        hash_comparer_stub,
+        token_comparer_stub,
+        update_access_token_repo_stub,
     )
 
 
@@ -140,3 +150,14 @@ def test_should_return_an_access_token_on_success(sut: DbAuthentication):
     )
     access_token = sut.auth(authentication)
     assert access_token == "access_token"
+
+
+@patch.object(UpdateAccessTokenRepoStub, "update")
+def test_should_call_update_access_token_repo_correct_values(
+    mock_update: MagicMock, sut: DbAuthentication
+):
+    authentication = AuthenticationModel(
+        email="valid_email@example.com", password="valid_password"
+    )
+    sut.auth(authentication)
+    mock_update.assert_called_with("valid_id", "access_token")
