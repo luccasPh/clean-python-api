@@ -22,7 +22,12 @@ class AccountMongoRepo(AddAccountRepo, LoadAccountByEmailRepo, UpdateAccessToken
         account = self._account_collection.find_one({"email": email})
         if account:
             account["id"] = str(account.pop("_id"))
-            return AccountModel(**account)
+            return AccountModel(
+                id=account["id"],
+                name=account["name"],
+                email=account["email"],
+                hashed_password=account["hashed_password"],
+            )
 
     def update_access_token(self, id: str, access_token: str):
         self._account_collection.update_one(
