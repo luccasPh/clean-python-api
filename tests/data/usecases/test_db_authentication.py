@@ -33,7 +33,7 @@ class EncrypterStub(Encrypter):
 
 
 class UpdateAccessTokenRepoStub(UpdateAccessTokenRepo):
-    def update(self, id: str, access_token: str):
+    def update_access_token(self, id: str, access_token: str):
         ...
 
 
@@ -152,22 +152,22 @@ def test_should_return_an_access_token_on_success(sut: DbAuthentication):
     assert access_token == "access_token"
 
 
-@patch.object(UpdateAccessTokenRepoStub, "update")
+@patch.object(UpdateAccessTokenRepoStub, "update_access_token")
 def test_should_call_update_access_token_repo_correct_values(
-    mock_update: MagicMock, sut: DbAuthentication
+    mock_update_access_token: MagicMock, sut: DbAuthentication
 ):
     authentication = AuthenticationModel(
         email="valid_email@example.com", password="valid_password"
     )
     sut.auth(authentication)
-    mock_update.assert_called_with("valid_id", "access_token")
+    mock_update_access_token.assert_called_with("valid_id", "access_token")
 
 
-@patch.object(UpdateAccessTokenRepoStub, "update")
+@patch.object(UpdateAccessTokenRepoStub, "update_access_token")
 def test_should_raise_exception_if_update_access_token_repo_raise(
-    mock_update: MagicMock, sut: DbAuthentication
+    mock_update_access_token: MagicMock, sut: DbAuthentication
 ):
-    mock_update.side_effect = Exception("Error on matrix")
+    mock_update_access_token.side_effect = Exception("Error on matrix")
     authentication = AuthenticationModel(
         email="valid_email@example.com", password="valid_password"
     )

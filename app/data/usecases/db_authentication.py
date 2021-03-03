@@ -28,5 +28,7 @@ class DbAuthentication(Authentication):
             )
             if result:
                 access_token = self._encrypter.encrypt(account.id)
-                self._update_access_token_repo.update(account.id, access_token)
+                self._update_access_token_repo.update_access_token(
+                    account.id, access_token
+                )
                 return access_token
