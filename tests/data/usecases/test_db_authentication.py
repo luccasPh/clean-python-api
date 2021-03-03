@@ -12,7 +12,7 @@ from app.data import (
 
 
 class LoadAccountByEmailRepoStub(LoadAccountByEmailRepo):
-    def load(self, email: str) -> AccountModel:
+    def load_by_email(self, email: str) -> AccountModel:
         account = AccountModel(
             id="valid_id",
             name="valid_name",
@@ -51,19 +51,19 @@ def sut():
     )
 
 
-@patch.object(LoadAccountByEmailRepoStub, "load")
-def test_should_call_loader_accout_by_email_correct_value(
-    mock_load_account_by_email_repo_stub: MagicMock, sut: DbAuthentication
+@patch.object(LoadAccountByEmailRepoStub, "load_by_email")
+def test_should_call_load_accout_by_email_correct_value(
+    mock_load_by_email: MagicMock, sut: DbAuthentication
 ):
     sut.auth(AuthenticationModel(email="valid_email@example.com", password="password"))
-    mock_load_account_by_email_repo_stub.assert_called_with("valid_email@example.com")
+    mock_load_by_email.assert_called_with("valid_email@example.com")
 
 
-@patch.object(LoadAccountByEmailRepoStub, "load")
+@patch.object(LoadAccountByEmailRepoStub, "load_by_email")
 def test_should_raise_exception_if_loader_accout_by_email_raise(
-    mock_load: MagicMock, sut: DbAuthentication
+    mock_load_by_email: MagicMock, sut: DbAuthentication
 ):
-    mock_load.side_effect = Exception("Error on matrix")
+    mock_load_by_email.side_effect = Exception("Error on matrix")
     authentication = AuthenticationModel(
         email="valid_email@example.com", password="valid_password"
     )
@@ -72,11 +72,11 @@ def test_should_raise_exception_if_loader_accout_by_email_raise(
     assert type(excinfo.value) is Exception
 
 
-@patch.object(LoadAccountByEmailRepoStub, "load")
+@patch.object(LoadAccountByEmailRepoStub, "load_by_email")
 def test_should_return_none_if_load_account_by_email_returns_none(
-    mock_load: MagicMock, sut: DbAuthentication
+    mock_load_by_email: MagicMock, sut: DbAuthentication
 ):
-    mock_load.return_value = None
+    mock_load_by_email.return_value = None
     authentication = AuthenticationModel(
         email="valid_email@example.com", password="valid_password"
     )

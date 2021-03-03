@@ -21,7 +21,7 @@ class DbAuthentication(Authentication):
         self._update_access_token_repo = update_access_token_repo
 
     def auth(self, authentication: AuthenticationModel) -> str:
-        account = self._load_account_by_email_repo.load(authentication.email)
+        account = self._load_account_by_email_repo.load_by_email(authentication.email)
         if account:
             result = self._hash_comparer.compare(
                 authentication.password, account.hashed_password
