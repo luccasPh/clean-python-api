@@ -6,6 +6,6 @@ from ..factories.signup.signup_factory import make_signup_controller
 router = APIRouter()
 
 
-@router.post("")
+@router.post("/signup")
 async def create_account(request: Request, response: Response):
     return await adpter_route(request, response, make_signup_controller())
