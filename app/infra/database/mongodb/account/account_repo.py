@@ -1,11 +1,12 @@
 from pymongo.collection import Collection
+from bson.objectid import ObjectId
 from dataclasses import asdict
 
 from app.domain import AccountModel, AddAccountModel
-from app.data import AddAccountRepo, LoadAccountByEmailRepo
+from app.data import AddAccountRepo, LoadAccountByEmailRepo, UpdateAccessTokenRepo
 
 
-class AccountMongoRepo(AddAccountRepo, LoadAccountByEmailRepo):
+class AccountMongoRepo(AddAccountRepo, LoadAccountByEmailRepo, UpdateAccessTokenRepo):
     def __init__(self, account_collection: Collection):
         self._account_collection = account_collection
 
@@ -22,3 +23,8 @@ class AccountMongoRepo(AddAccountRepo, LoadAccountByEmailRepo):
         if account:
             account["id"] = str(account.pop("_id"))
             return AccountModel(**account)
+
+    def update_access_token(self, id: str, access_token: str):
+        self._account_collection.update_one(
+            {"_id": ObjectId(id)}, {"$set": {"access_token": access_token}}
+        )
