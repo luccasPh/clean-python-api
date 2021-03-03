@@ -46,7 +46,7 @@ def test_should_200_on_login(
     value = "123"
     hashed_password = hashpw(
         value.encode("utf-8"), salt=b"$2b$12$9ITqN6psxZRjP8hN04j8Be"
-    )
+    ).decode("utf-8")
     mock_collection.insert_one(
         dict(name="John", email="email@example.com", hashed_password=hashed_password)
     )

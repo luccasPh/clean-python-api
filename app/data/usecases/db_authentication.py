@@ -27,7 +27,6 @@ class DbAuthentication(Authentication):
                 authentication.password, account.hashed_password
             )
             if result:
-                print("compare ok")
                 access_token = self._encrypter.encrypt(account.id)
                 self._update_access_token_repo.update_access_token(
                     account.id, access_token
