@@ -20,3 +20,4 @@ pytestdebug.log
 .mypy_cache/
 .dmypy.json
 dmypy.json
+.env
