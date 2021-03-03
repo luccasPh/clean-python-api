@@ -19,5 +19,6 @@ class AccountMongoRepo(AddAccountRepo, LoadAccountByEmailRepo):
 
     def load_by_email(self, email: str) -> AccountModel:
         account = self._account_collection.find_one({"email": email})
-        account["id"] = str(account.pop("_id"))
-        return AccountModel(**account)
+        if account:
+            account["id"] = str(account.pop("_id"))
+            return AccountModel(**account)

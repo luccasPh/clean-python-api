@@ -40,3 +40,8 @@ def test_should_return_an_account_on_load_by_email_success(sut: AccountMongoRepo
     assert account.name == "valid_name"
     assert account.email == "valid_email@example.com"
     assert account.hashed_password == "hashed_password"
+
+
+def test_should_return_none_if_load_by_email_fails(sut: AccountMongoRepo):
+    account = sut.load_by_email("valid_email@example.com")
+    assert not account
