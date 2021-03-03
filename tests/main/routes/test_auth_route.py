@@ -56,3 +56,16 @@ def test_should_200_on_login(
     )
 
     assert response.status_code == 200
+
+
+@patch("app.main.factories.login.login_factory.get_collection")
+def test_should_401_on_login(
+    mock_get_collection: MagicMock, mock_collection: Collection
+):
+    mock_get_collection.return_value = mock_collection
+    response = client.post(
+        "/api/login",
+        json=dict(email="email@example.com", password="123"),
+    )
+
+    assert response.status_code == 401
