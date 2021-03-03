@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request, Response
 
 from ..adapters.fastapi_route_adapter import adpter_route
-from ..factories.signup import make_signup_controller
+from ..factories.signup.signup_factory import make_signup_controller
 
 router = APIRouter()
 

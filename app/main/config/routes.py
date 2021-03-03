@@ -1,5 +1,5 @@
 from fastapi import FastAPI, APIRouter
-from ..routes import signup
+from ..routes import signup_route as signup
 
 
 def setup_routes(app: FastAPI):

@@ -1,6 +1,6 @@
 from app.domain import AddAccount, AddAccountModel, AccountModel
 from ..protocols.cryptography.hasher import Hasher
-from ..protocols.repository.add_account_repo import AddAccountRepo
+from ..protocols.repository.account.add_account_repo import AddAccountRepo
 
 
 class DbAddAccount(AddAccount):
