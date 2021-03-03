@@ -22,3 +22,13 @@ def test_should_return_an_access_token_on_success(
     mock_encode.return_value = "any_token"
     accesse_token = sut.encrypt("any_id")
     assert accesse_token == "any_token"
+
+
+@patch("app.infra.cryptography.jwt_adapter.jwt.encode")
+def test_should_raise_exception_if_encode_raise(
+    mock_encode: MagicMock, sut: JwtAdapter
+):
+    mock_encode.side_effect = Exception()
+    with pytest.raises(Exception) as excinfo:
+        assert sut.encrypt("any_id")
+    assert type(excinfo.value) is Exception
