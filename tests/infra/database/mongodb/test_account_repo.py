@@ -11,6 +11,7 @@ MOCK_COLLECTION = mongomock.MongoClient().db.collection
 @pytest.fixture
 def sut():
     yield AccountMongoRepo(MOCK_COLLECTION)
+    MOCK_COLLECTION.drop()
 
 
 def test_should_return_an_account_on_add_success(sut: AccountMongoRepo):
@@ -34,6 +35,7 @@ def test_should_return_an_account_on_load_by_email_success(sut: AccountMongoRepo
             hashed_password="hashed_password",
         )
     )
+
     account = sut.load_by_email("valid_email@example.com")
     assert account
     assert account.id
