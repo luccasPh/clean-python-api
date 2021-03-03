@@ -1,6 +1,7 @@
 import traceback
 
 from app.domain import Authentication, AuthenticationModel
+from app.main import log_controller_handler
 from ..protocols.controller import Controller
 from ..protocols.http import HttpRequest, HttpResponse
 from ..errors.server_error import ServerError
@@ -14,6 +15,7 @@ class LoginController(Controller):
         self._authentication = authentication
         self._validation = validation
 
+    @log_controller_handler
     def handle(self, request: HttpRequest) -> HttpResponse:
         try:
             data = request.body
