@@ -8,4 +8,4 @@ class JwtAdapter(Encrypter):
         self._secret = secret
 
     def encrypt(self, value: str) -> str:
-        jwt.encode(dict(id=value), self._secret)
+        return jwt.encode(dict(id=value), self._secret)
