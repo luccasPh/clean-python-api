@@ -47,6 +47,19 @@ def test_should_create_an_account_on_add(sut: AccountMongoRepo):
     assert expected["hashed_password"] == "valid_password"
 
 
+@patch.object(MOCK_COLLECTION, "insert_one")
+def test_should_raise_exception_if_collection_insert_raise_on_add(
+    mock_insert: MagicMock, sut: AccountMongoRepo
+):
+    mock_insert.side_effect = Exception()
+    data = AddAccountModel(
+        name="valid_name", email="valid_email@example.com", password="valid_password"
+    )
+    with pytest.raises(Exception) as excinfo:
+        assert sut.add(data)
+    assert type(excinfo.value) is Exception
+
+
 def test_should_return_an_account_on_load_by_email_success(sut: AccountMongoRepo):
     MOCK_COLLECTION.insert_one(
         dict(
