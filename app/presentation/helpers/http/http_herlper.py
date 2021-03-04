@@ -17,3 +17,7 @@ def server_error(error: Exception, traceback: str) -> HttpResponse:
 
 def ok(data) -> HttpResponse:
     return HttpResponse(status_code=200, body=data)
+
+
+def no_content() -> HttpResponse:
+    return HttpResponse(status_code=204, body=None)

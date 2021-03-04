@@ -83,7 +83,7 @@ def test_should_500_if_add_account_raise_exception(
     assert response.body["message"] == "Internal server error"
 
 
-def test_should_200_if_data_is_valid(sut: SignUpController):
+def test_should_204_if_data_is_valid(sut: SignUpController):
     request = HttpRequest(
         body={
             "name": "John Doe",
@@ -92,15 +92,9 @@ def test_should_200_if_data_is_valid(sut: SignUpController):
             "password_confirmation": "test",
         }
     )
-    expected = {
-        "id": "valid_id",
-        "name": "valid_name",
-        "email": "valid_email@example.com",
-        "hashed_password": "valid_password_hash",
-    }
+
     response = sut.handle(request)
-    assert response.status_code == 200
-    assert response.body == expected
+    assert response.status_code == 204
 
 
 @patch.object(ValidationStub, "validate")

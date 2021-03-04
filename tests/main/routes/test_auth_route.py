@@ -18,7 +18,7 @@ def mock_collection():
 
 
 @patch("app.main.factories.signup.signup_factory.get_collection")
-def test_should_200_on_signup(
+def test_should_204_on_signup(
     mock_get_collection: MagicMock, mock_collection: Collection
 ):
     mock_get_collection.return_value = mock_collection
@@ -31,11 +31,7 @@ def test_should_200_on_signup(
             password_confirmation="123",
         ),
     )
-    expected_response = response.json()
-    assert response.status_code == 200
-    assert expected_response["id"]
-    assert expected_response["name"] == "John"
-    assert expected_response["email"] == "foo@example.com"
+    assert response.status_code == 204
 
 
 @patch("app.main.factories.login.login_factory.get_collection")

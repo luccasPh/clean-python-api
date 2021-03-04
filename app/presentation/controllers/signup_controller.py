@@ -1,5 +1,4 @@
 import traceback
-from dataclasses import asdict
 
 from app.domain import AddAccount
 from app.domain import AddAccountModel
@@ -7,7 +6,7 @@ from app.main import log_controller_handler
 from ..protocols.http import HttpRequest, HttpResponse
 from ..protocols.controller import Controller
 from ..errors.server_error import ServerError
-from ..helpers.http.http_herlper import bad_request, server_error, ok
+from ..helpers.http.http_herlper import bad_request, server_error, no_content
 from ..protocols.validation import Validation
 
 
@@ -25,9 +24,9 @@ class SignUpController(Controller):
                 return bad_request(is_error)
 
             data.pop("password_confirmation")
-            account = self._add_account.add(AddAccountModel(**data))
+            self._add_account.add(AddAccountModel(**data))
 
-            return ok(asdict(account))
+            return no_content()
 
         except Exception:
             return server_error(ServerError(), traceback.format_exc())
