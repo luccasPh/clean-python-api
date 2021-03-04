@@ -61,7 +61,7 @@ def test_should_raise_exception_if_collection_insert_raise_on_add(
 
 
 @patch.object(MOCK_COLLECTION, "find_one")
-def test_should_call_collection_find_with_correct_values_on_load_by_email(
+def test_should_call_collection_find_with_correct_value_on_load_by_email(
     find_one: MagicMock, sut: AccountMongoRepo
 ):
     sut.load_by_email("valid_email@example.com")
@@ -88,6 +88,16 @@ def test_should_return_an_account_on_load_by_email_success(sut: AccountMongoRepo
 def test_should_return_none_if_load_by_email_fails(sut: AccountMongoRepo):
     account = sut.load_by_email("valid_email@example.com")
     assert not account
+
+
+@patch.object(MOCK_COLLECTION, "find_one")
+def test_should_raise_exception_if_collection_find_raise_on_load_by_email(
+    mock_find_one: MagicMock, sut: AccountMongoRepo
+):
+    mock_find_one.side_effect = Exception()
+    with pytest.raises(Exception) as excinfo:
+        assert sut.load_by_email("valid_email@example.com")
+    assert type(excinfo.value) is Exception
 
 
 def test_update_the_account_access_token_on_update_idem_on_success(
