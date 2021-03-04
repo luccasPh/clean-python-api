@@ -17,14 +17,14 @@ def sut():
 
 @patch.object(MOCK_COLLECTION, "insert_one")
 def test_should_call_collection_insert_with_correct_values_on_add(
-    mock_insert: MagicMock, sut: AccountMongoRepo
+    mock_insert_one: MagicMock, sut: AccountMongoRepo
 ):
     data = AddAccountModel(
         name="valid_name", email="valid_email@example.com", password="valid_password"
     )
 
     sut.add(data)
-    mock_insert.assert_called_with(
+    mock_insert_one.assert_called_with(
         dict(
             name="valid_name",
             email="valid_email@example.com",
@@ -49,9 +49,9 @@ def test_should_create_an_account_on_add(sut: AccountMongoRepo):
 
 @patch.object(MOCK_COLLECTION, "insert_one")
 def test_should_raise_exception_if_collection_insert_raise_on_add(
-    mock_insert: MagicMock, sut: AccountMongoRepo
+    mock_insert_one: MagicMock, sut: AccountMongoRepo
 ):
-    mock_insert.side_effect = Exception()
+    mock_insert_one.side_effect = Exception()
     data = AddAccountModel(
         name="valid_name", email="valid_email@example.com", password="valid_password"
     )
