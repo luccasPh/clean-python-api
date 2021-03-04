@@ -1,6 +1,7 @@
 import mongomock
 import pytest
 from mock import patch, MagicMock
+from bson.objectid import ObjectId
 
 from app.infra import AccountMongoRepo
 from app.domain import AddAccountModel
@@ -98,6 +99,17 @@ def test_should_raise_exception_if_collection_find_raise_on_load_by_email(
     with pytest.raises(Exception) as excinfo:
         assert sut.load_by_email("valid_email@example.com")
     assert type(excinfo.value) is Exception
+
+
+@patch.object(MOCK_COLLECTION, "update_one")
+def test_should_call_collection_update_with_correct_values_on_update_access_token(
+    mock_update_one: MagicMock, sut: AccountMongoRepo
+):
+    sut.update_access_token("60415ca48ea5495cdd3084b4", "any_token")
+    mock_update_one.assert_called_with(
+        {"_id": ObjectId("60415ca48ea5495cdd3084b4")},
+        {"$set": {"access_token": "any_token"}},
+    )
 
 
 def test_update_the_account_access_token_on_update_idem_on_success(
