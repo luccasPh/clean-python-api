@@ -1,5 +1,6 @@
 import mongomock
 import pytest
+from mock import patch, MagicMock
 
 from app.infra import AccountMongoRepo
 from app.domain import AddAccountModel
@@ -14,17 +15,22 @@ def sut():
     MOCK_COLLECTION.drop()
 
 
-def test_should_return_an_account_on_add_success(sut: AccountMongoRepo):
+@patch.object(MOCK_COLLECTION, "insert_one")
+def test_should_call_collection_insert_with_correct_values_on_add(
+    mock_insert: MagicMock, sut: AccountMongoRepo
+):
     data = AddAccountModel(
         name="valid_name", email="valid_email@example.com", password="valid_password"
     )
 
-    account = sut.add(data)
-    assert account
-    assert account.id
-    assert account.name == "valid_name"
-    assert account.email == "valid_email@example.com"
-    assert account.hashed_password == "valid_password"
+    sut.add(data)
+    mock_insert.assert_called_with(
+        dict(
+            name="valid_name",
+            email="valid_email@example.com",
+            hashed_password="valid_password",
+        )
+    )
 
 
 def test_should_return_an_account_on_load_by_email_success(sut: AccountMongoRepo):
