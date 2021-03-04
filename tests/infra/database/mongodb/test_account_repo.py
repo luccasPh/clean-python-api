@@ -127,3 +127,13 @@ def test_update_the_account_access_token_on_update_idem_on_success(
     account = MOCK_COLLECTION.find_one({"_id": account_id})
     assert account
     assert account["access_token"] == "any_token"
+
+
+@patch.object(MOCK_COLLECTION, "update_one")
+def test_should_raise_exception_if_collection_update_raise_on_update_access_token(
+    mock_update_one: MagicMock, sut: AccountMongoRepo
+):
+    mock_update_one.side_effect = Exception()
+    with pytest.raises(Exception) as excinfo:
+        assert sut.update_access_token("60415ca48ea5495cdd3084b4", "any_token")
+    assert type(excinfo.value) is Exception
