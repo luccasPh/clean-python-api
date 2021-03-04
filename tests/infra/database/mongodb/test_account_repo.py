@@ -33,6 +33,20 @@ def test_should_call_collection_insert_with_correct_values_on_add(
     )
 
 
+def test_should_create_an_account_on_add(sut: AccountMongoRepo):
+    data = AddAccountModel(
+        name="valid_name", email="valid_email@example.com", password="valid_password"
+    )
+
+    sut.add(data)
+    expected = MOCK_COLLECTION.find_one()
+    assert expected
+    assert expected["_id"]
+    assert expected["name"] == "valid_name"
+    assert expected["email"] == "valid_email@example.com"
+    assert expected["hashed_password"] == "valid_password"
+
+
 def test_should_return_an_account_on_load_by_email_success(sut: AccountMongoRepo):
     MOCK_COLLECTION.insert_one(
         dict(
