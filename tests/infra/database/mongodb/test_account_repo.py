@@ -60,6 +60,14 @@ def test_should_raise_exception_if_collection_insert_raise_on_add(
     assert type(excinfo.value) is Exception
 
 
+@patch.object(MOCK_COLLECTION, "find_one")
+def test_should_call_collection_find_with_correct_values_on_load_by_email(
+    find_one: MagicMock, sut: AccountMongoRepo
+):
+    sut.load_by_email("valid_email@example.com")
+    find_one.assert_called_with({"email": "valid_email@example.com"})
+
+
 def test_should_return_an_account_on_load_by_email_success(sut: AccountMongoRepo):
     MOCK_COLLECTION.insert_one(
         dict(
