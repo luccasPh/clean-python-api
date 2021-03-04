@@ -1,4 +1,4 @@
-from app.domain import AddAccount, AddAccountModel, AccountModel
+from app.domain import AddAccount, AddAccountModel
 from ..protocols.cryptography.hasher import Hasher
 from ..protocols.repository.account.add_account_repo import AddAccountRepo
 
@@ -8,8 +8,7 @@ class DbAddAccount(AddAccount):
         self._hasher = Hasher
         self._add_account_repo = add_account_repo
 
-    def add(self, data: AddAccountModel) -> AccountModel:
+    def add(self, data: AddAccountModel):
         hashed_password = self._hasher.hash(data.password)
         data.password = hashed_password
-        account = self._add_account_repo.add(data)
-        return account
+        self._add_account_repo.add(data)

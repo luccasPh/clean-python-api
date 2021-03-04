@@ -2,7 +2,7 @@ import pytest
 from mock import MagicMock, patch
 
 from app.data import AddAccountRepo, DbAddAccount
-from app.domain import AddAccountModel, AccountModel
+from app.domain import AddAccountModel
 
 
 class HasherStub:
@@ -11,14 +11,8 @@ class HasherStub:
 
 
 class AddAccountRepoStub(AddAccountRepo):
-    def add(self, data: AddAccountModel) -> AccountModel:
-        fake_account = AccountModel(
-            id="valid_id",
-            name="valid_name",
-            email="valid_email@example.com",
-            hashed_password="valid_hashed_password",
-        )
-        return fake_account
+    def add(self, data: AddAccountModel):
+        ...
 
 
 @pytest.fixture
@@ -73,17 +67,3 @@ def test_should_raise_if_add_account_repo_raise(mock_add: MagicMock, sut: DbAddA
     with pytest.raises(Exception) as excinfo:
         assert sut.add(account_data)
     assert type(excinfo.value) is Exception
-
-
-def test_should_return_an_account(sut: DbAddAccount):
-    account_data = AddAccountModel(
-        name="valid_name", email="valid_email@example.com", password="valid_password"
-    )
-    expected_account = AccountModel(
-        id="valid_id",
-        name="valid_name",
-        email="valid_email@example.com",
-        hashed_password="valid_hashed_password",
-    )
-    account = sut.add(account_data)
-    assert account == expected_account
