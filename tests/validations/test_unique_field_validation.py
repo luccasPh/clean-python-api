@@ -1,4 +1,5 @@
 import pytest
+import mongomock
 from mock import patch, MagicMock
 
 from app.validations import UniqueFieldValidation, DbSearchByField
@@ -25,3 +26,21 @@ def test_should_db_search_by_field_calls_search_by_field_correct_value(
     }
     sut.validate(input)
     mock_search_by_field.assert_called_with("email", "test@example.com")
+
+
+@patch("app.main.decorators.log.get_collection")
+@patch.object(DbSearchByFieldStub, "search_by_field")
+def test_should_db_search_by_field_raise_exception_if_search_by_field_raise(
+    mock_search_by_field: MagicMock,
+    mock_get_collection: MagicMock,
+    sut: DbSearchByFieldStub,
+):
+    mock_search_by_field.side_effect = Exception("Error on matrix")
+    mock_get_collection.return_value = mongomock.MongoClient().db.collection
+    input = {
+        "email": "test@example.com",
+    }
+
+    with pytest.raises(Exception) as excinfo:
+        assert sut.validate(input)
+    assert type(excinfo.value) is Exception
