@@ -38,7 +38,7 @@ def test_should_call_email_validator_correct_value(
 
 
 @patch.object(EmailValidatorStub, "is_valid")
-def test_should_400_if_invalid_email_provided(
+def test_should_return_invalid_param_if_invalid_email_provided(
     mock_is_valid: MagicMock, sut: EmailValidation
 ):
     mock_is_valid.return_value = False
