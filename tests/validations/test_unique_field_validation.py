@@ -44,3 +44,15 @@ def test_should_db_search_by_field_raise_exception_if_search_by_field_raise(
     with pytest.raises(Exception) as excinfo:
         assert sut.validate(input)
     assert type(excinfo.value) is Exception
+
+
+@patch.object(DbSearchByFieldStub, "search_by_field")
+def test_should_return_unique_value_error_if_db_search_by_field_fails(
+    mock_search_by_field: MagicMock, sut: UniqueFieldValidation
+):
+    mock_search_by_field.return_value = True
+    input = {
+        "email": "test@example.com",
+    }
+    result = sut.validate(input)
+    assert result.args[0] == "The received email is already in use"
