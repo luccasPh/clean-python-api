@@ -74,3 +74,19 @@ def test_should_call_load_accout_by_email_correct_value(
     }
     sut.validate(input)
     mock_load_by_email.assert_called_with("test@example.com")
+
+
+@patch("app.main.decorators.log.get_collection")
+@patch.object(LoadAccountByEmailRepoStub, "load_by_email")
+def test_should_raise_if_load_account_by_email_raise_exception(
+    mock_load_by_email: MagicMock, mock_get_collection: MagicMock, sut: EmailValidation
+):
+    mock_load_by_email.side_effect = Exception("Error on matrix")
+    mock_get_collection.return_value = mongomock.MongoClient().db.collection
+    input = {
+        "email": "test@example.com",
+    }
+
+    with pytest.raises(Exception) as excinfo:
+        assert sut.validate(input)
+    assert type(excinfo.value) is Exception
