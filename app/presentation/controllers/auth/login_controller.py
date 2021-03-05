@@ -2,12 +2,12 @@ import traceback
 
 from app.domain import Authentication, AuthenticationModel
 from app.main.decorators.log import log_controller_handler
-from ..protocols.controller import Controller
-from ..protocols.http import HttpRequest, HttpResponse
-from ..errors.server_error import ServerError
-from ..errors.unauthorized_error import UnauthorizedError
-from ..protocols.validation import Validation
-from ..helpers.http.http_herlper import bad_request, ok, server_error, unauthorized
+from ...protocols.controller import Controller
+from ...protocols.http import HttpRequest, HttpResponse
+from ...errors.server_error import ServerError
+from ...errors.unauthorized_error import UnauthorizedError
+from ...protocols.validation import Validation
+from ...helpers.http.http_herlper import bad_request, ok, server_error, unauthorized
 
 
 class LoginController(Controller):

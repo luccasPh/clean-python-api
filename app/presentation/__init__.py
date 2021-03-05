@@ -5,6 +5,6 @@ from app.presentation.errors.server_error import ServerError
 from app.presentation.errors.unique_value_error import UniqueValueError
 from app.presentation.protocols.http import *
 from app.presentation.helpers.http.http_herlper import *
-from app.presentation.controllers.signup_controller import SignUpController
-from app.presentation.controllers.login_controller import LoginController
+from app.presentation.controllers.auth.signup_controller import SignUpController
+from app.presentation.controllers.auth.login_controller import LoginController
 from app.presentation.protocols.validation import Validation

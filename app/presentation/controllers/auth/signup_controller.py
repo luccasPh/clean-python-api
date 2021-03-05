@@ -1,13 +1,12 @@
 import traceback
 
-from app.domain import AddAccount
-from app.domain import AddAccountModel
+from app.domain import AddAccount, AddAccountModel
 from app.main.decorators.log import log_controller_handler
-from ..protocols.http import HttpRequest, HttpResponse
-from ..protocols.controller import Controller
-from ..errors.server_error import ServerError
-from ..helpers.http.http_herlper import bad_request, server_error, no_content
-from ..protocols.validation import Validation
+from ...protocols.http import HttpRequest, HttpResponse
+from ...protocols.controller import Controller
+from ...errors.server_error import ServerError
+from ...helpers.http.http_herlper import bad_request, server_error, no_content
+from ...protocols.validation import Validation
 
 
 class SignUpController(Controller):
