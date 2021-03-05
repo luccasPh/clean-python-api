@@ -83,3 +83,15 @@ def test_should_500_if_add_survey_raise_exception(
     response = sut.handle(http_request)
     assert response.status_code == 500
     assert response.body["message"] == "Internal server error"
+
+
+def test_return_204_on_success(sut: AddSurveyController):
+    http_request = HttpRequest(
+        body=dict(
+            question="any_question",
+            answers=[dict(image="any_image", answer="any_answer")],
+        )
+    )
+    respose = sut.handle(http_request)
+    assert respose.status_code == 204
+    assert not respose.body
