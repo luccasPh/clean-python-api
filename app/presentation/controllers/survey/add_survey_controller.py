@@ -1,7 +1,10 @@
+import traceback
+
 from app.domain import AddSurvey
 from ...protocols.controller import Controller, HttpRequest, HttpResponse
 from ...protocols.validation import Validation
-from ...helpers.http.http_herlper import bad_request
+from ...errors.server_error import ServerError
+from ...helpers.http.http_herlper import bad_request, server_error
 
 
 class AddSurveyController(Controller):
@@ -10,8 +13,11 @@ class AddSurveyController(Controller):
         self._add_survey = add_survey
 
     def handle(self, request: HttpRequest) -> HttpResponse:
-        data = request.body
-        is_error = self._validation.validate(data)
-        if is_error:
-            return bad_request(is_error)
-        self._add_survey.add(data)
+        try:
+            data = request.body
+            is_error = self._validation.validate(data)
+            if is_error:
+                return bad_request(is_error)
+            self._add_survey.add(data)
+        except Exception:
+            return server_error(ServerError(), traceback.format_exc())

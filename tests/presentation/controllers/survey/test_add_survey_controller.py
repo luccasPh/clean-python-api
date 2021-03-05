@@ -1,4 +1,5 @@
 import pytest
+import mongomock
 from mock import patch, MagicMock
 
 from app.domain import AddSurvey, AddSurveyModel
@@ -64,3 +65,21 @@ def test_should_call_add_survey_correct_values(
     )
     sut.handle(http_request)
     mock_add.assert_called_with(http_request.body)
+
+
+@patch("app.main.decorators.log.get_collection")
+@patch.object(AddSurveyStub, "add")
+def test_should_500_if_add_survey_raise_exception(
+    mock_add: MagicMock, mock_get_collection: MagicMock, sut: AddSurveyController
+):
+    mock_add.side_effect = Exception("Error on matrix")
+    mock_get_collection.return_value = mongomock.MongoClient().db.collection
+    http_request = HttpRequest(
+        body=dict(
+            question="any_question",
+            answers=[dict(image="any_image", answer="any_answer")],
+        )
+    )
+    response = sut.handle(http_request)
+    assert response.status_code == 500
+    assert response.body["message"] == "Internal server error"
