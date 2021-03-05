@@ -18,10 +18,14 @@ def mock_collection():
 
 
 @patch("app.main.factories.signup.signup_factory.get_collection")
+@patch("app.main.factories.signup.signup_validation.get_collection")
 def test_should_204_on_signup(
-    mock_get_collection: MagicMock, mock_collection: Collection
+    mock_factory_get_collection: MagicMock,
+    mock_validation_get_collection: MagicMock,
+    mock_collection: Collection,
 ):
-    mock_get_collection.return_value = mock_collection
+    mock_factory_get_collection.return_value = mock_collection
+    mock_validation_get_collection.return_value = mock_collection
     response = client.post(
         "/api/signup",
         json=dict(
