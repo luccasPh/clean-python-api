@@ -2,8 +2,7 @@ import pytest
 import mongomock
 from mock import patch, MagicMock
 
-from app.presentation import EmailValidation, EmailValidator
-from app.data import LoadAccountByEmailRepo
+from app.validations import EmailValidation, EmailValidator, EmailAvailability
 
 
 class EmailValidatorStub(EmailValidator):
@@ -11,7 +10,7 @@ class EmailValidatorStub(EmailValidator):
         return True
 
 
-class LoadAccountByEmailRepoStub(LoadAccountByEmailRepo):
+class EmailAvailabilityStub(EmailAvailability):
     def load_by_email(self, email: str):
         return None
 
@@ -19,7 +18,7 @@ class LoadAccountByEmailRepoStub(LoadAccountByEmailRepo):
 @pytest.fixture
 def sut():
     email_validator_stub = EmailValidatorStub()
-    load_account_by_email_repo_stub = LoadAccountByEmailRepoStub()
+    load_account_by_email_repo_stub = EmailAvailabilityStub()
     sut = EmailValidation(
         "email", email_validator_stub, load_account_by_email_repo_stub
     )
@@ -65,7 +64,7 @@ def test_should_raise_if_email_validator_raise_exception(
     assert type(excinfo.value) is Exception
 
 
-@patch.object(LoadAccountByEmailRepoStub, "load_by_email")
+@patch.object(EmailAvailabilityStub, "load_by_email")
 def test_should_call_load_accout_by_email_correct_value(
     mock_load_by_email: MagicMock, sut: EmailValidation
 ):
@@ -77,7 +76,7 @@ def test_should_call_load_accout_by_email_correct_value(
 
 
 @patch("app.main.decorators.log.get_collection")
-@patch.object(LoadAccountByEmailRepoStub, "load_by_email")
+@patch.object(EmailAvailabilityStub, "load_by_email")
 def test_should_raise_if_load_account_by_email_raise_exception(
     mock_load_by_email: MagicMock, mock_get_collection: MagicMock, sut: EmailValidation
 ):
@@ -92,7 +91,7 @@ def test_should_raise_if_load_account_by_email_raise_exception(
     assert type(excinfo.value) is Exception
 
 
-@patch.object(LoadAccountByEmailRepoStub, "load_by_email")
+@patch.object(EmailAvailabilityStub, "load_by_email")
 def test_should_return_email_in_used_if_email_used_provided(
     mock_load_by_email: MagicMock, sut: EmailValidation
 ):

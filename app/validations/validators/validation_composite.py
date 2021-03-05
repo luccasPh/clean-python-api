@@ -1,4 +1,4 @@
-from ...protocols.validation import Validation
+from app.presentation import Validation
 
 
 class ValidationComposite(Validation):

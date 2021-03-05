@@ -7,7 +7,7 @@ from app.presentation import (
     ServerError,
     server_error,
 )
-from app.main import log_controller_handler
+from app.main.decorators.log import log_controller_handler
 
 
 class FakeClass:

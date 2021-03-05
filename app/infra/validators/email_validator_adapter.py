@@ -1,6 +1,6 @@
 from validate_email import validate_email
 
-from ..presentation.protocols.email_validator import EmailValidator
+from app.validations import EmailValidator
 
 
 class EmailValidatorAdapter(EmailValidator):

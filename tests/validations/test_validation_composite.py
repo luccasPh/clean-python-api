@@ -1,7 +1,8 @@
 import pytest
 from mock import patch, MagicMock
 
-from app.presentation import ValidationComposite, Validation
+from app.validations import ValidationComposite
+from app.presentation import Validation
 
 
 class ValidationStub(Validation):

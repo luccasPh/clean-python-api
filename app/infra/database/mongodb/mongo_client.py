@@ -1,7 +1,7 @@
 from pymongo.collection import Collection
 from pymongo import MongoClient
 
-from app.main import env
+from app.main.config import env
 
 
 def get_collection(name: str) -> Collection:

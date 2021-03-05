@@ -1,6 +1,6 @@
-from app.utils.email_validator_adapter import EmailValidatorAdapter
+from app.infra import EmailValidatorAdapter
 from app.infra import AccountMongoRepo, get_collection
-from app.presentation import (
+from app.validations import (
     ValidationComposite,
     RequiredFieldValidation,
     CompareFieldsValidation,

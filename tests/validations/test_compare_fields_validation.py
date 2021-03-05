@@ -1,6 +1,6 @@
 import pytest
 
-from app.presentation import CompareFieldsValidation
+from app.validations import CompareFieldsValidation
 
 
 @pytest.fixture

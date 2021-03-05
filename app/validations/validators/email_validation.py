@@ -1,8 +1,6 @@
-from app.data import LoadAccountByEmailRepo
-from ...protocols.validation import Validation
-from ...errors.invalid_param_error import InvalidParamError
-from ...protocols.email_validator import EmailValidator
-from ...errors.email_in_use_error import EmailInUseError
+from app.presentation import Validation, InvalidParamError, EmailInUseError
+from ..protocols.email_availability import EmailAvailability
+from ..protocols.email_validator import EmailValidator
 
 
 class EmailValidation(Validation):
@@ -10,7 +8,7 @@ class EmailValidation(Validation):
         self,
         field_name: str,
         email_validator: EmailValidator,
-        load_account_by_email_repo_stub: LoadAccountByEmailRepo,
+        load_account_by_email_repo_stub: EmailAvailability,
     ):
         self.field_name = field_name
         self._email_validator = email_validator

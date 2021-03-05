@@ -1,8 +1,8 @@
 import pytest
 from mock import patch, MagicMock
 
-from app.utils.email_validator_adapter import EmailValidatorAdapter
-from app.presentation import EmailValidator
+from app.infra import EmailValidatorAdapter
+from app.validations import EmailValidator
 
 CHECK_MX = False
 SKIP_SMTP = True
@@ -14,7 +14,7 @@ def sut():
     yield sut
 
 
-@patch("app.utils.email_validator_adapter.validate_email")
+@patch("app.infra.validators.email_validator_adapter.validate_email")
 def test_should_return_false_if_validator_is_false(
     mock_validate_email: MagicMock, sut: EmailValidator
 ):
@@ -28,7 +28,7 @@ def test_should_return_true_if_validator_is_true(sut: EmailValidator):
     assert is_valid
 
 
-@patch("app.utils.email_validator_adapter.validate_email")
+@patch("app.infra.validators.email_validator_adapter.validate_email")
 def test_should_call_validator_with_correct_email(
     mock_validate_email: MagicMock, sut: EmailValidator
 ):

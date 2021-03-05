@@ -1,7 +1,7 @@
 import traceback
 
 from app.domain import Authentication, AuthenticationModel
-from app.main import log_controller_handler
+from app.main.decorators.log import log_controller_handler
 from ..protocols.controller import Controller
 from ..protocols.http import HttpRequest, HttpResponse
 from ..errors.server_error import ServerError

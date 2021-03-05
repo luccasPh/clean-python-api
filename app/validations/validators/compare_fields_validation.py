@@ -1,5 +1,4 @@
-from ...protocols.validation import Validation
-from ...errors.invalid_param_error import InvalidParamError
+from app.presentation import Validation, InvalidParamError
 
 
 class CompareFieldsValidation(Validation):

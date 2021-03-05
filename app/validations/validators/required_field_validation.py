@@ -1,5 +1,4 @@
-from ...protocols.validation import Validation
-from ...errors.missing_param_error import MissingParamError
+from app.presentation import Validation, MissingParamError
 
 
 class RequiredFieldValidation(Validation):

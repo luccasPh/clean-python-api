@@ -1,0 +1,6 @@
+from app.validations.validators.compare_fields_validation import CompareFieldsValidation
+from app.validations.validators.email_validation import EmailValidation
+from app.validations.validators.required_field_validation import RequiredFieldValidation
+from app.validations.validators.validation_composite import ValidationComposite
+from app.validations.protocols.email_availability import EmailAvailability
+from app.validations.protocols.email_validator import EmailValidator

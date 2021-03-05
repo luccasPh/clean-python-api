@@ -1,6 +1,6 @@
 import pytest
 
-from app.presentation import RequiredFieldValidation
+from app.validations import RequiredFieldValidation
 
 
 @pytest.fixture

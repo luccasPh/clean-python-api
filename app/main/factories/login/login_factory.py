@@ -1,7 +1,7 @@
+from app.main.config import env
 from app.presentation import LoginController
 from app.data import DbAuthentication
 from app.infra import BcryptAdapter, JwtAdapter, AccountMongoRepo, get_collection
-from app.main import env
 from .login_validation import make_login_validation
 
 
