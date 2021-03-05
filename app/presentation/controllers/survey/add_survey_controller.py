@@ -1,5 +1,6 @@
 from ...protocols.controller import Controller, HttpRequest, HttpResponse
 from ...protocols.validation import Validation
+from ...helpers.http.http_herlper import bad_request
 
 
 class AddSurveyController(Controller):
@@ -7,4 +8,6 @@ class AddSurveyController(Controller):
         self._validation = validation
 
     def handle(self, request: HttpRequest) -> HttpResponse:
-        self._validation.validate(request.body)
+        is_error = self._validation.validate(request.body)
+        if is_error:
+            return bad_request(is_error)
