@@ -8,20 +8,18 @@ class EmailValidation(Validation):
         self,
         field_name: str,
         email_validator: EmailValidator,
-        load_account_by_email_repo_stub: EmailAvailability,
+        email_availability: EmailAvailability,
     ):
         self.field_name = field_name
         self._email_validator = email_validator
-        self._load_account_by_email_repo_stub = load_account_by_email_repo_stub
+        self._email_availability = email_availability
 
     def validate(self, input):
         is_valid = self._email_validator.is_valid(input[self.field_name])
         if not is_valid:
             return InvalidParamError(self.field_name)
 
-        account = self._load_account_by_email_repo_stub.load_by_email(
-            input[self.field_name]
-        )
+        account = self._email_availability.load_by_email(input[self.field_name])
         if account:
             return EmailInUseError()
 
