@@ -8,4 +8,4 @@ class MongoDbAdapter(DbSearchByField):
         self._collection = collection
 
     def search_by_field(self, field: str, value: str) -> bool:
-        ...
+        self._collection.find({field: value})
