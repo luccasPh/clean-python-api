@@ -35,3 +35,8 @@ def test_should_return_true_if_collection_find_one_result(sut: MongoDbAdapter):
     MOCK_COLLECTION.insert_one({"email": "test@example.com"})
     result = sut.search_by_field("email", "test@example.com")
     assert result
+
+
+def test_should_return_false_if_collection_not_find_one_result(sut: MongoDbAdapter):
+    result = sut.search_by_field("email", "test@example.com")
+    assert not result
