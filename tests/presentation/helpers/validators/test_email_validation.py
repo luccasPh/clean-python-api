@@ -3,6 +3,7 @@ import mongomock
 from mock import patch, MagicMock
 
 from app.presentation import EmailValidation, EmailValidator
+from app.data import LoadAccountByEmailRepo
 
 
 class EmailValidatorStub(EmailValidator):
@@ -10,10 +11,18 @@ class EmailValidatorStub(EmailValidator):
         return True
 
 
+class LoadAccountByEmailRepoStub(LoadAccountByEmailRepo):
+    def load_by_email(self, email: str):
+        return None
+
+
 @pytest.fixture
 def sut():
     email_validator_stub = EmailValidatorStub()
-    sut = EmailValidation("email", email_validator_stub)
+    load_account_by_email_repo_stub = LoadAccountByEmailRepoStub()
+    sut = EmailValidation(
+        "email", email_validator_stub, load_account_by_email_repo_stub
+    )
     yield sut
 
 
@@ -54,3 +63,14 @@ def test_should_raise_if_email_validator_raise_exception(
     with pytest.raises(Exception) as excinfo:
         assert sut.validate(input)
     assert type(excinfo.value) is Exception
+
+
+@patch.object(LoadAccountByEmailRepoStub, "load_by_email")
+def test_should_call_load_accout_by_email_correct_value(
+    mock_load_by_email: MagicMock, sut: EmailValidation
+):
+    input = {
+        "email": "test@example.com",
+    }
+    sut.validate(input)
+    mock_load_by_email.assert_called_with("test@example.com")
