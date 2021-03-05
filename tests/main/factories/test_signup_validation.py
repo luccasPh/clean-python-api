@@ -10,6 +10,7 @@ def test_should_call_validation_composite_with_all_validations():
         "RequiredFieldValidation: password_confirmation",
         "CompareFieldsValidation: password -> password_confirmation",
         "EmailValidation: email",
+        "UniqueFieldValidation: email",
     ]
     assert len(expected) == len(validation_composite.validations)
     assert not any(
