@@ -90,3 +90,15 @@ def test_should_raise_if_load_account_by_email_raise_exception(
     with pytest.raises(Exception) as excinfo:
         assert sut.validate(input)
     assert type(excinfo.value) is Exception
+
+
+@patch.object(LoadAccountByEmailRepoStub, "load_by_email")
+def test_should_return_email_in_used_if_email_used_provided(
+    mock_load_by_email: MagicMock, sut: EmailValidation
+):
+    mock_load_by_email.return_value = "Account"
+    input = {
+        "email": "email_used@example.com",
+    }
+    result = sut.validate(input)
+    assert result.args[0] == "The received email is already in use"

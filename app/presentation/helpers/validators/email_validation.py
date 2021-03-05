@@ -2,6 +2,7 @@ from app.data import LoadAccountByEmailRepo
 from ...protocols.validation import Validation
 from ...errors.invalid_param_error import InvalidParamError
 from ...protocols.email_validator import EmailValidator
+from ...errors.email_in_use_error import EmailInUseError
 
 
 class EmailValidation(Validation):
@@ -20,7 +21,11 @@ class EmailValidation(Validation):
         if not is_valid:
             return InvalidParamError(self.field_name)
 
-        self._load_account_by_email_repo_stub.load_by_email(input[self.field_name])
+        account = self._load_account_by_email_repo_stub.load_by_email(
+            input[self.field_name]
+        )
+        if account:
+            return EmailInUseError()
 
     def __str__(self):
         return f"EmailValidation: {self.field_name}"
