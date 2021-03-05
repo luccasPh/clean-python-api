@@ -8,3 +8,6 @@ from app.presentation.helpers.http.http_herlper import *
 from app.presentation.controllers.auth.signup_controller import SignUpController
 from app.presentation.controllers.auth.login_controller import LoginController
 from app.presentation.protocols.validation import Validation
+from app.presentation.controllers.survey.add_survey_controller import (
+    AddSurveyController,
+)
