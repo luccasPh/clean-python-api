@@ -145,3 +145,22 @@ def test_should_call_collection_find_one_correct_values_on_load_by_token(
 ):
     sut.load_by_token("any_token")
     mock_find_one.assert_called_with({"access_token": "any_token"})
+
+
+def test_should_return_an_account_without_role_on_load_by_token_success(
+    sut: AccountMongoRepo,
+):
+    MOCK_COLLECTION.insert_one(
+        dict(
+            name="any_name",
+            email="any_email@example.com",
+            hashed_password="any_password",
+            access_token="any_token",
+        )
+    )
+    account = sut.load_by_token("any_token")
+    assert account
+    assert account.id
+    assert account.name == "any_name"
+    assert account.email == "any_email@example.com"
+    assert account.hashed_password == "any_password"

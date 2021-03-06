@@ -45,4 +45,8 @@ class AccountMongoRepo(
     def load_by_token(
         self, access_token: str, role: str = None
     ) -> Union[AccountModel, None]:
-        self._account_collection.find_one({"access_token": access_token})
+        account = self._account_collection.find_one({"access_token": access_token})
+        if account:
+            account["id"] = account.pop("_id")
+            account.pop("access_token")
+            return AccountModel(**account)
