@@ -64,7 +64,7 @@ def test_should_call_add_survey_correct_values(
         )
     )
     sut.handle(http_request)
-    mock_add.assert_called_with(http_request.body)
+    mock_add.assert_called_with(AddSurveyModel(**http_request.body))
 
 
 @patch("app.main.decorators.log.get_collection")
