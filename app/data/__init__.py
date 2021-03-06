@@ -11,6 +11,9 @@ from app.data.protocols.repositories.account.load_account_by_email_repo import (
 )
 from app.data.protocols.repositories.survey.add_survey_repo import AddSurveyRepo
 from app.data.protocols.repositories.log.log_error_repo import LogErrorRepo
+from app.data.protocols.repositories.account.load_account_by_token_repo import (
+    LoadAccountByTokenRepo,
+)
 from app.data.usecases.db_add_account import DbAddAccount
 from app.data.usecases.db_authentication import DbAuthentication
 from app.data.usecases.db_add_survey import DbAddSurvey, AddSurveyModel
