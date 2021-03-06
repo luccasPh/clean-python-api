@@ -8,6 +8,8 @@ from app.data.protocols.repository.account.update_access_token_repo import (
 from app.data.protocols.repository.account.load_account_by_email_repo import (
     LoadAccountByEmailRepo,
 )
+from app.data.protocols.repository.survey.add_survey_repo import AddSurveyRepo
 from app.data.protocols.repository.log.log_error_repo import LogErrorRepo
 from app.data.usecases.db_add_account import DbAddAccount
 from app.data.usecases.db_authentication import DbAuthentication
+from app.data.usecases.db_add_survey import DbAddSurvey, AddSurveyModel
