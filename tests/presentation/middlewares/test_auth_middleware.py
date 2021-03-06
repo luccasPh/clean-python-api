@@ -34,3 +34,14 @@ def test_should_calls_load_account_by_token_correct_value(
 ):
     sut.handle(HttpRequest(headers={"x-access-token": "any_token"}, body=None))
     mock_load_by_token.assert_called_with(access_token="any_token")
+
+
+@patch.object(LoadAccountByTokenStub, "load_by_token")
+def test_should_return_403_if_load_account_by_token_returns_none(
+    mock_load_by_token: MagicMock, sut: AuthMiddleware
+):
+    mock_load_by_token.return_value = None
+    http_response = sut.handle(
+        HttpRequest(headers={"x-access-token": "any_token"}, body=None)
+    )
+    assert http_response.status_code == 403
