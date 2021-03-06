@@ -137,3 +137,11 @@ def test_should_raise_exception_if_collection_update_raise_on_update_access_toke
     with pytest.raises(Exception) as excinfo:
         assert sut.update_access_token("60415ca48ea5495cdd3084b4", "any_token")
     assert type(excinfo.value) is Exception
+
+
+@patch.object(MOCK_COLLECTION, "find_one")
+def test_should_call_collection_find_one_correct_values_on_load_by_token(
+    mock_find_one: MagicMock, sut: AccountMongoRepo
+):
+    sut.load_by_token("any_token")
+    mock_find_one.assert_called_with({"access_token": "any_token"})

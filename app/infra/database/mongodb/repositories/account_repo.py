@@ -1,12 +1,23 @@
+from typing import Union
 from pymongo.collection import Collection
 from bson.objectid import ObjectId
 from dataclasses import asdict
 
 from app.domain import AccountModel, AddAccountModel
-from app.data import AddAccountRepo, LoadAccountByEmailRepo, UpdateAccessTokenRepo
+from app.data import (
+    AddAccountRepo,
+    LoadAccountByEmailRepo,
+    UpdateAccessTokenRepo,
+    LoadAccountByTokenRepo,
+)
 
 
-class AccountMongoRepo(AddAccountRepo, LoadAccountByEmailRepo, UpdateAccessTokenRepo):
+class AccountMongoRepo(
+    AddAccountRepo,
+    LoadAccountByEmailRepo,
+    UpdateAccessTokenRepo,
+    LoadAccountByTokenRepo,
+):
     def __init__(self, account_collection: Collection):
         self._account_collection = account_collection
 
@@ -30,3 +41,8 @@ class AccountMongoRepo(AddAccountRepo, LoadAccountByEmailRepo, UpdateAccessToken
         self._account_collection.update_one(
             {"_id": ObjectId(id)}, {"$set": {"access_token": access_token}}
         )
+
+    def load_by_token(
+        self, access_token: str, role: str = None
+    ) -> Union[AccountModel, None]:
+        self._account_collection.find_one({"access_token": access_token})
