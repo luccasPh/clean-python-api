@@ -45,6 +45,16 @@ def test_should_return_none_if_decrypter_returns_none(
     assert not account
 
 
+@patch.object(DecrypterStub, "decrypt")
+def test_should_raise_exception_if_decrypter_raise(
+    mock_decrypt: MagicMock, sut: DbLoadAccountByToken
+):
+    mock_decrypt.side_effect = Exception("Error on matrix")
+    with pytest.raises(Exception) as excinfo:
+        assert sut.load("any_token", "any_role")
+    assert type(excinfo.value) is Exception
+
+
 @patch.object(LoadAccountByTokenRepoStub, "load_by_token")
 def test_should_call_load_account_by_toke_correct_value(
     mock_load_by_token: MagicMock, sut: DbLoadAccountByToken
