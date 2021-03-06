@@ -38,3 +38,12 @@ def test_should_raise_exception_if_encode_raise(
 def test_should_call_decode_correct_value(mock_decode: MagicMock, sut: JwtAdapter):
     sut.decrypt("any_token")
     mock_decode.assert_called_with("any_token", "secret")
+
+
+@patch("app.infra.cryptography.jwt_adapter.jwt.decode")
+def test_should_return_a_value_on_decrypt_success(
+    mock_decode: MagicMock, sut: JwtAdapter
+):
+    mock_decode.return_value = "any_value"
+    value = sut.decrypt("any_token")
+    assert value == "any_value"
