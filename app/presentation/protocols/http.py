@@ -10,4 +10,5 @@ class HttpResponse:
 
 @dataclass
 class HttpRequest:
+    headers: Optional[Any]
     body: Optional[dict[str, Any]]

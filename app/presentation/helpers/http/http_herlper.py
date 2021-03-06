@@ -9,6 +9,10 @@ def unauthorized(error: Exception) -> HttpResponse:
     return HttpResponse(status_code=401, body={"message": error.args[0]})
 
 
+def forbidden(error: Exception) -> HttpResponse:
+    return HttpResponse(status_code=403, body={"message": error.args[0]})
+
+
 def server_error(error: Exception, traceback: str) -> HttpResponse:
     return HttpResponse(
         status_code=500, body={"message": error.args[0], "traceback": traceback}
