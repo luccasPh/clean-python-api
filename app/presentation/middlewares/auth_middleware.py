@@ -10,8 +10,9 @@ from ..errors.server_error import ServerError
 
 
 class AuthMiddleware(Middleware):
-    def __init__(self, load_account_by_token: LoadAccountByToken):
+    def __init__(self, load_account_by_token: LoadAccountByToken, role: str = None):
         self._load_account_by_token = load_account_by_token
+        self._role = role
 
     @log_controller_handler
     def handle(self, request: HttpRequest) -> HttpResponse:
@@ -21,7 +22,7 @@ class AuthMiddleware(Middleware):
             )
             if access_token:
                 account = self._load_account_by_token.load_by_token(
-                    access_token=access_token
+                    access_token=access_token, role=self._role
                 )
                 if account:
                     return ok(account.id)
