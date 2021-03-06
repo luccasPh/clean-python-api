@@ -1,6 +1,6 @@
 import traceback
 
-from app.domain import AddSurvey
+from app.domain import AddSurvey, AddSurveyModel
 from ...protocols.controller import Controller, HttpRequest, HttpResponse
 from ...protocols.validation import Validation
 from ...errors.server_error import ServerError
@@ -18,7 +18,7 @@ class AddSurveyController(Controller):
             is_error = self._validation.validate(data)
             if is_error:
                 return bad_request(is_error)
-            self._add_survey.add(data)
+            self._add_survey.add(AddSurveyModel(**data))
             return no_content()
         except Exception:
             return server_error(ServerError(), traceback.format_exc())

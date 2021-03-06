@@ -13,6 +13,10 @@ class AddSurveyModel:
     question: str
     answers: list[SurveyAnswer]
 
+    def __post_init__(self):
+        list_answer = list(map(lambda data: SurveyAnswer(**data), self.answers))
+        self.answers = list_answer
+
 
 class AddSurvey(ABC):
     @abstractmethod
