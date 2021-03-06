@@ -51,3 +51,12 @@ def test_should_call_load_account_by_toke_correct_value(
 ):
     sut.load("any_token", "any_role")
     mock_load_by_token.assert_called_with("any_token", "any_role")
+
+
+@patch.object(LoadAccountByTokenRepoStub, "load_by_token")
+def test_should_return_none_if_load_account_by_token_repo_returns_none(
+    mock_load_by_token: MagicMock, sut: DbLoadAccountByToken
+):
+    mock_load_by_token.return_value = None
+    account = sut.load("any_token", "any_role")
+    assert not account
