@@ -37,7 +37,7 @@ def test_should_call_decrypt_with_correct_value(
 
 
 @patch.object(DecrypterStub, "decrypt")
-def test_should_return_null_if_decrypter_returns_null(
+def test_should_return_none_if_decrypter_returns_none(
     mock_decrypt: MagicMock, sut: DbLoadAccountByToken
 ):
     mock_decrypt.return_value = None
