@@ -32,3 +32,9 @@ def test_should_raise_exception_if_encode_raise(
     with pytest.raises(Exception) as excinfo:
         assert sut.encrypt("any_id")
     assert type(excinfo.value) is Exception
+
+
+@patch("app.infra.cryptography.jwt_adapter.jwt.decode")
+def test_should_call_decode_correct_value(mock_decode: MagicMock, sut: JwtAdapter):
+    sut.decrypt("any_token")
+    mock_decode.assert_called_with("any_token", "secret")
