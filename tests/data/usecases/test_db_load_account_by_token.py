@@ -60,3 +60,12 @@ def test_should_return_none_if_load_account_by_token_repo_returns_none(
     mock_load_by_token.return_value = None
     account = sut.load("any_token", "any_role")
     assert not account
+
+
+def test_should_return_an_account_on_success(sut: DbLoadAccountByToken):
+    account = sut.load("any_token", "any_role")
+    assert account
+    assert account.id == "valid_id"
+    assert account.name == "valid_name"
+    assert account.email == "valid_email@example.com"
+    assert account.hashed_password == "hashed_password"

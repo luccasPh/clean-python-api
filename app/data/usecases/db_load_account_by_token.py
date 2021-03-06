@@ -15,4 +15,6 @@ class DbLoadAccountByToken(LoadAccountByToken):
     def load(self, access_token: str, role: str = None) -> AccountModel:
         token = self._decrypter.decrypt(access_token)
         if token:
-            self._load_account_by_token_repo.load_by_token(token, role)
+            account = self._load_account_by_token_repo.load_by_token(token, role)
+            if account:
+                return account
