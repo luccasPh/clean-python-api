@@ -45,3 +45,13 @@ def test_should_return_403_if_load_account_by_token_returns_none(
         HttpRequest(headers={"x-access-token": "any_token"}, body=None)
     )
     assert http_response.status_code == 403
+
+
+def test_should_return_200_if_load_account_by_token_returns_an_account(
+    sut: AuthMiddleware,
+):
+    http_response = sut.handle(
+        HttpRequest(headers={"x-access-token": "any_token"}, body=None)
+    )
+    assert http_response.status_code == 200
+    assert http_response.body
