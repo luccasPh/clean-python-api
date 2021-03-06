@@ -1,6 +1,7 @@
 import traceback
 
 from app.domain import AddSurvey, AddSurveyModel
+from app.main.decorators.log import log_controller_handler
 from ...protocols.controller import Controller, HttpRequest, HttpResponse
 from ...protocols.validation import Validation
 from ...errors.server_error import ServerError
@@ -12,6 +13,7 @@ class AddSurveyController(Controller):
         self._validation = validation
         self._add_survey = add_survey
 
+    @log_controller_handler
     def handle(self, request: HttpRequest) -> HttpResponse:
         try:
             data = request.body
