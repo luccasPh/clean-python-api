@@ -7,7 +7,7 @@ from app.domain import LoadAccountByToken, AccountModel
 
 
 class LoadAccountByTokenStub(LoadAccountByToken):
-    def load_by_token(self, access_token: str, role: str = None) -> AccountModel:
+    def load(self, access_token: str, role: str = None) -> AccountModel:
         account = AccountModel(
             id="valid_id",
             name="valid_name",
@@ -29,19 +29,19 @@ def test_should_return_403_if_no_access_token_exists_in_headers(sut: AuthMiddlew
     assert http_response.body["message"] == "Access danied"
 
 
-@patch.object(LoadAccountByTokenStub, "load_by_token")
+@patch.object(LoadAccountByTokenStub, "load")
 def test_should_calls_load_account_by_token_correct_values(
-    mock_load_by_token: MagicMock, sut: AuthMiddleware
+    mock_load: MagicMock, sut: AuthMiddleware
 ):
     sut.handle(HttpRequest(headers={"x-access-token": "any_token"}, body=None))
-    mock_load_by_token.assert_called_with(access_token="any_token", role=None)
+    mock_load.assert_called_with(access_token="any_token", role=None)
 
 
-@patch.object(LoadAccountByTokenStub, "load_by_token")
+@patch.object(LoadAccountByTokenStub, "load")
 def test_should_return_403_if_load_account_by_token_returns_none(
-    mock_load_by_token: MagicMock, sut: AuthMiddleware
+    mock_load: MagicMock, sut: AuthMiddleware
 ):
-    mock_load_by_token.return_value = None
+    mock_load.return_value = None
     http_response = sut.handle(
         HttpRequest(headers={"x-access-token": "any_token"}, body=None)
     )
@@ -59,11 +59,11 @@ def test_should_return_200_if_load_account_by_token_returns_an_account(
 
 
 @patch("app.main.decorators.log.get_collection")
-@patch.object(LoadAccountByTokenStub, "load_by_token")
+@patch.object(LoadAccountByTokenStub, "load")
 def test_should_return_500_if_load_account_by_token_raise_exception(
-    mock_load_by_token: MagicMock, mock_get_collection: MagicMock, sut: AuthMiddleware
+    mock_load: MagicMock, mock_get_collection: MagicMock, sut: AuthMiddleware
 ):
-    mock_load_by_token.side_effect = Exception("Error on matrix")
+    mock_load.side_effect = Exception("Error on matrix")
     mock_get_collection.return_value = mongomock.MongoClient().db.collection
     http_response = sut.handle(
         HttpRequest(headers={"x-access-token": "any_token"}, body=None)

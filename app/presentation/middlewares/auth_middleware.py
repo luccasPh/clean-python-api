@@ -21,7 +21,7 @@ class AuthMiddleware(Middleware):
                 request.headers and request.headers.get("x-access-token") or None
             )
             if access_token:
-                account = self._load_account_by_token.load_by_token(
+                account = self._load_account_by_token.load(
                     access_token=access_token, role=self._role
                 )
                 if account:

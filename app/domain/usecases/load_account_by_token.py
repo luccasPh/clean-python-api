@@ -13,5 +13,5 @@ class AddAccountModel:
 
 class LoadAccountByToken(ABC):
     @abstractmethod
-    def load_by_token(self, access_token: str, role: str = None) -> AccountModel:
+    def load(self, access_token: str, role: str = None) -> AccountModel:
         """Abstract method for load an account by token field"""
