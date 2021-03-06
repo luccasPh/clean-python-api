@@ -79,3 +79,13 @@ def test_should_return_an_account_on_success(sut: DbLoadAccountByToken):
     assert account.name == "valid_name"
     assert account.email == "valid_email@example.com"
     assert account.hashed_password == "hashed_password"
+
+
+@patch.object(LoadAccountByTokenRepoStub, "load_by_token")
+def test_should_raise_exception_if_load_account_by_token_raise(
+    mock_load_by_token: MagicMock, sut: DbLoadAccountByToken
+):
+    mock_load_by_token.side_effect = Exception("Error on matrix")
+    with pytest.raises(Exception) as excinfo:
+        assert sut.load("any_token", "any_role")
+    assert type(excinfo.value) is Exception
