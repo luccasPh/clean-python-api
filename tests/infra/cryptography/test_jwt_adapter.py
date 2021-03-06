@@ -47,3 +47,13 @@ def test_should_return_a_value_on_decrypt_success(
     mock_decode.return_value = "any_value"
     value = sut.decrypt("any_token")
     assert value == "any_value"
+
+
+@patch("app.infra.cryptography.jwt_adapter.jwt.decode")
+def test_should_raise_exception_if_decode_raise(
+    mock_decode: MagicMock, sut: JwtAdapter
+):
+    mock_decode.side_effect = Exception()
+    with pytest.raises(Exception) as excinfo:
+        assert sut.decrypt("any_id")
+    assert type(excinfo.value) is Exception
