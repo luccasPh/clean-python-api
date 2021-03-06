@@ -1,4 +1,5 @@
 import pytest
+import mongomock
 from mock import patch, MagicMock
 
 from app.presentation import AuthMiddleware, HttpRequest
@@ -55,3 +56,17 @@ def test_should_return_200_if_load_account_by_token_returns_an_account(
     )
     assert http_response.status_code == 200
     assert http_response.body
+
+
+@patch("app.main.decorators.log.get_collection")
+@patch.object(LoadAccountByTokenStub, "load_by_token")
+def test_should_return_500_if_load_account_by_token_raise_exception(
+    mock_load_by_token: MagicMock, mock_get_collection: MagicMock, sut: AuthMiddleware
+):
+    mock_load_by_token.side_effect = Exception("Error on matrix")
+    mock_get_collection.return_value = mongomock.MongoClient().db.collection
+    http_response = sut.handle(
+        HttpRequest(headers={"x-access-token": "any_token"}, body=None)
+    )
+    assert http_response.status_code == 500
+    assert http_response.body["message"] == "Internal server error"
