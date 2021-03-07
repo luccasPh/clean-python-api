@@ -192,3 +192,13 @@ def test_should_return_none_on_load_by_token_fails(
 ):
     account = sut.load_by_token("any_token", "any_role")
     assert not account
+
+
+@patch.object(MOCK_COLLECTION, "find_one")
+def test_should_raise_exception_if_collection_find_raise_on_load_by_token(
+    mock_find_one: MagicMock, sut: AccountMongoRepo
+):
+    mock_find_one.side_effect = Exception()
+    with pytest.raises(Exception) as excinfo:
+        assert sut.load_by_token("any_token", "any_role")
+    assert type(excinfo.value) is Exception
