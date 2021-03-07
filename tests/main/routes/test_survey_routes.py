@@ -17,7 +17,7 @@ def mock_collection():
 
 
 @patch("app.main.factories.survey.add_survey_factory.get_collection")
-def test_should_204_on_surveys(
+def test_should_403_on_add_surveys_without_token(
     mock_factory_get_collection: MagicMock,
     mock_collection: Collection,
 ):
@@ -32,4 +32,4 @@ def test_should_204_on_surveys(
             ],
         ),
     )
-    assert response.status_code == 204
+    assert response.status_code == 403
