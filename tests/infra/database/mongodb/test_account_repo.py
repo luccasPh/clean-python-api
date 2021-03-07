@@ -143,8 +143,9 @@ def test_should_raise_exception_if_collection_update_raise_on_update_access_toke
 def test_should_call_collection_find_one_correct_values_on_load_by_token(
     mock_find_one: MagicMock, sut: AccountMongoRepo
 ):
-    sut.load_by_token("any_token")
-    mock_find_one.assert_called_with({"access_token": "any_token"})
+    mock_find_one.return_value = None
+    sut.load_by_token("any_token", "any_role")
+    mock_find_one.assert_called_with({"access_token": "any_token", "role": "any_role"})
 
 
 def test_should_return_an_account_without_role_on_load_by_token_success(
@@ -159,6 +160,26 @@ def test_should_return_an_account_without_role_on_load_by_token_success(
         )
     )
     account = sut.load_by_token("any_token")
+    assert account
+    assert account.id
+    assert account.name == "any_name"
+    assert account.email == "any_email@example.com"
+    assert account.hashed_password == "any_password"
+
+
+def test_should_return_an_account_with_role_on_load_by_token_success(
+    sut: AccountMongoRepo,
+):
+    MOCK_COLLECTION.insert_one(
+        dict(
+            name="any_name",
+            email="any_email@example.com",
+            hashed_password="any_password",
+            access_token="any_token",
+            role="any_role",
+        )
+    )
+    account = sut.load_by_token("any_token", "any_role")
     assert account
     assert account.id
     assert account.name == "any_name"
