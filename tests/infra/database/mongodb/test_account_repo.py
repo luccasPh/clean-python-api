@@ -185,3 +185,10 @@ def test_should_return_an_account_with_role_on_load_by_token_success(
     assert account.name == "any_name"
     assert account.email == "any_email@example.com"
     assert account.hashed_password == "any_password"
+
+
+def test_should_return_none_on_load_by_token_fails(
+    sut: AccountMongoRepo,
+):
+    account = sut.load_by_token("any_token", "any_role")
+    assert not account
