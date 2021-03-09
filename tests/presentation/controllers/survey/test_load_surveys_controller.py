@@ -62,6 +62,16 @@ def test_should_return_200_on_success(sut: LoadSurveysController):
     assert http_response.body == expected
 
 
+@patch.object(LoadSurveysStub, "load")
+def test_should_return_204_if_load_surveys_returns_empty(
+    mock_load: MagicMock, sut: LoadSurveysController
+):
+    mock_load.return_value = []
+    http_response = sut.handle(HttpRequest())
+    assert http_response.status_code == 204
+    assert not http_response.body
+
+
 @patch("app.main.decorators.log.get_collection")
 @patch.object(LoadSurveysStub, "load")
 def test_should_500_if_load_surveys_raise_exception(
