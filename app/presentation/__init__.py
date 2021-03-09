@@ -11,5 +11,8 @@ from app.presentation.protocols.validation import Validation
 from app.presentation.controllers.survey.add_survey_controller import (
     AddSurveyController,
 )
+from app.presentation.controllers.survey.load_surveys_controller import (
+    LoadSurveysController,
+)
 from app.presentation.protocols.middlewares import Middleware
 from app.presentation.middlewares.auth_middleware import AuthMiddleware
