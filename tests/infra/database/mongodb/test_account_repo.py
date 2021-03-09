@@ -167,7 +167,7 @@ def test_should_return_an_account_without_role_on_load_by_token_success(
     assert account.hashed_password == "any_password"
 
 
-def test_should_return_an_account_with_role_on_load_by_token_success(
+def test_should_return_an_account_with_admin_role_on_load_by_token_success(
     sut: AccountMongoRepo,
 ):
     MOCK_COLLECTION.insert_one(
@@ -176,10 +176,45 @@ def test_should_return_an_account_with_role_on_load_by_token_success(
             email="any_email@example.com",
             hashed_password="any_password",
             access_token="any_token",
-            role="any_role",
+            role="admin",
         )
     )
-    account = sut.load_by_token("any_token", "any_role")
+    account = sut.load_by_token("any_token", "admin")
+    assert account
+    assert account.id
+    assert account.name == "any_name"
+    assert account.email == "any_email@example.com"
+    assert account.hashed_password == "any_password"
+
+
+def test_should_return_an_account_with_invalid_role_on_load_by_token_success(
+    sut: AccountMongoRepo,
+):
+    MOCK_COLLECTION.insert_one(
+        dict(
+            name="any_name",
+            email="any_email@example.com",
+            hashed_password="any_password",
+            access_token="any_token",
+        )
+    )
+    account = sut.load_by_token("any_token", "admin")
+    assert not account
+
+
+def test_should_return_an_account_if_user_is_admin_role_on_load_by_token_success(
+    sut: AccountMongoRepo,
+):
+    MOCK_COLLECTION.insert_one(
+        dict(
+            name="any_name",
+            email="any_email@example.com",
+            hashed_password="any_password",
+            access_token="any_token",
+            role="admin",
+        )
+    )
+    account = sut.load_by_token("any_token")
     assert account
     assert account.id
     assert account.name == "any_name"

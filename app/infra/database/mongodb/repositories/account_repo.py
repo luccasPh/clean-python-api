@@ -46,7 +46,7 @@ class AccountMongoRepo(
         self, access_token: str, role: str = None
     ) -> Union[AccountModel, None]:
         account = self._account_collection.find_one(
-            {"access_token": access_token, "role": role}
+            {"access_token": access_token, "$or": [{"role": role}, {"role": "admin"}]}
         )
         if account:
             account["id"] = str(account.pop("_id"))
