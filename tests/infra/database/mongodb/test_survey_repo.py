@@ -58,3 +58,20 @@ def test_should_create_a_survey_on_add(sut: SurveyMongoRepo):
     assert survey["question"] == survey_data["question"]
     assert survey["answers"] == survey_data["answers"]
     assert survey["date"] == datetime.utcnow()
+
+
+@patch.object(MOCK_COLLECTION, "insert_one")
+def test_should_raise_exception_if_collection_insert_raise_on_add(
+    mock_insert_one: MagicMock, sut: SurveyMongoRepo
+):
+    mock_insert_one.side_effect = Exception()
+    survey_data = dict(
+        question="any_question",
+        answers=[
+            dict(answer="any_answer", image="any_image"),
+            dict(answer="other_answer", image=None),
+        ],
+    )
+    with pytest.raises(Exception) as excinfo:
+        sut.add(AddSurveyModel(**survey_data))
+    assert type(excinfo.value) is Exception
