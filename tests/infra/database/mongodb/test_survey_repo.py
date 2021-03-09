@@ -42,6 +42,7 @@ def test_should_call_insert_with_correct_values_on_add(
     )
 
 
+@freeze_time("2021-03-09")
 def test_should_create_a_survey_on_add(sut: SurveyMongoRepo):
     survey_data = dict(
         question="any_question",
@@ -56,3 +57,4 @@ def test_should_create_a_survey_on_add(sut: SurveyMongoRepo):
     assert survey["_id"]
     assert survey["question"] == survey_data["question"]
     assert survey["answers"] == survey_data["answers"]
+    assert survey["date"] == datetime.utcnow()
