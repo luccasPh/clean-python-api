@@ -145,7 +145,9 @@ def test_should_call_collection_find_one_correct_values_on_load_by_token(
 ):
     mock_find_one.return_value = None
     sut.load_by_token("any_token", "any_role")
-    mock_find_one.assert_called_with({"access_token": "any_token", "role": "any_role"})
+    mock_find_one.assert_called_with(
+        {"access_token": "any_token", "$or": [{"role": "any_role"}, {"role": "admin"}]}
+    )
 
 
 def test_should_return_an_account_without_role_on_load_by_token_success(
