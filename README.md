@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/luccasPh/clean-python-api.svg?branch=master)](https://travis-ci.org/luccasPh/clean-python-api)
+[![Coverage Status](https://coveralls.io/repos/github/luccasPh/clean-python-api/badge.svg?branch=master)](https://coveralls.io/github/luccasPh/clean-python-api?branch=master)
+
 # **Clean Python API**
 
 Essa API é uma adaptação da api em node que faz parte do treinamento do professor Rodrigo Manguinho (Mango) na Udemy.
