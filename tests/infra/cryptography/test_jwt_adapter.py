@@ -6,13 +6,13 @@ from app.infra import JwtAdapter
 
 @pytest.fixture
 def sut():
-    return JwtAdapter("secret")
+    return JwtAdapter("secret", "HS256")
 
 
 @patch("app.infra.cryptography.jwt_adapter.jwt.encode")
 def test_should_call_encode_correct_value(mock_encode: MagicMock, sut: JwtAdapter):
     sut.encrypt("any_id")
-    mock_encode.assert_called_with(dict(id="any_id"), "secret")
+    mock_encode.assert_called_with(dict(id="any_id"), "secret", algorithm="HS256")
 
 
 @patch("app.infra.cryptography.jwt_adapter.jwt.encode")
@@ -37,7 +37,7 @@ def test_should_raise_exception_if_encode_raise(
 @patch("app.infra.cryptography.jwt_adapter.jwt.decode")
 def test_should_call_decode_correct_value(mock_decode: MagicMock, sut: JwtAdapter):
     sut.decrypt("any_token")
-    mock_decode.assert_called_with("any_token", "secret")
+    mock_decode.assert_called_with("any_token", "secret", algorithms=["HS256"])
 
 
 @patch("app.infra.cryptography.jwt_adapter.jwt.decode")
