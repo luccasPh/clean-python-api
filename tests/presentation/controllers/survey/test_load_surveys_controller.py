@@ -37,3 +37,24 @@ def test_should_load_surveys_calls_load(
 ):
     sut.handle(HttpRequest())
     mock_load.assert_called()
+
+
+@freeze_time("2021-03-09")
+def test_should_return_200_on_success(sut: LoadSurveysController):
+    http_response = sut.handle(HttpRequest())
+    expected = [
+        dict(
+            id="any_id",
+            question="any_question",
+            answers=[dict(image="any_image", answer="any_answer")],
+            date=datetime.utcnow(),
+        ),
+        dict(
+            id="other_id",
+            question="other_question",
+            answers=[dict(image="other_image", answer="other_answer")],
+            date=datetime.utcnow(),
+        ),
+    ]
+    assert http_response.status_code == 200
+    assert http_response.body == expected

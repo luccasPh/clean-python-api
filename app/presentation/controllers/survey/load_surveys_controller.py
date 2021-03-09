@@ -1,5 +1,8 @@
+from dataclasses import asdict
+
 from app.domain import LoadSurveys
 from ...protocols.controller import Controller, HttpRequest, HttpResponse
+from ...helpers.http.http_herlper import ok
 
 
 class LoadSurveysController(Controller):
@@ -7,4 +10,10 @@ class LoadSurveysController(Controller):
         self._load_surveys = load_surveys
 
     def handle(self, request: HttpRequest) -> HttpResponse:
-        self._load_surveys.load()
+        surveys_model = self._load_surveys.load()
+        surveys = []
+        if surveys_model:
+            for survey in surveys_model:
+                surveys.append(asdict(survey))
+
+        return ok(surveys)
