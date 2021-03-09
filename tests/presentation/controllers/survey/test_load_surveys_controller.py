@@ -1,4 +1,6 @@
 import pytest
+import mongomock
+from typing import Union
 from mock import patch, MagicMock
 from datetime import datetime
 from freezegun import freeze_time
@@ -8,7 +10,7 @@ from app.domain import SurveyModel, LoadSurveys
 
 
 class LoadSurveysStub(LoadSurveys):
-    def load(self) -> list[SurveyModel]:
+    def load(self) -> Union[list[SurveyModel], None]:
         fake_survey_1 = dict(
             id="any_id",
             question="any_question",
@@ -58,3 +60,21 @@ def test_should_return_200_on_success(sut: LoadSurveysController):
     ]
     assert http_response.status_code == 200
     assert http_response.body == expected
+
+
+@patch("app.main.decorators.log.get_collection")
+@patch.object(LoadSurveysStub, "load")
+def test_should_500_if_load_surveys_raise_exception(
+    mock_add: MagicMock, mock_get_collection: MagicMock, sut: LoadSurveysController
+):
+    mock_add.side_effect = Exception("Error on matrix")
+    mock_get_collection.return_value = mongomock.MongoClient().db.collection
+    http_request = HttpRequest(
+        body=dict(
+            question="any_question",
+            answers=[dict(image="any_image", answer="any_answer")],
+        )
+    )
+    response = sut.handle(http_request)
+    assert response.status_code == 500
+    assert response.body["message"] == "Internal server error"
