@@ -8,7 +8,7 @@ from .login_validation import make_login_validation
 def make_login_controller():
     salt = b"$2b$12$9ITqN6psxZRjP8hN04j8Be"
     bcrypt_adapter = BcryptAdapter(salt)
-    jwt_adapter = JwtAdapter(env.JWT_SECRET_KEY)
+    jwt_adapter = JwtAdapter(env.JWT_SECRET_KEY, "HS256")
     account_mongo_repo = AccountMongoRepo(get_collection("accounts"))
     db_authentication = DbAuthentication(
         load_account_by_email_repo=account_mongo_repo,
