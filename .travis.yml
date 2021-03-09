@@ -1,0 +1,16 @@
+language: python
+python:
+  - "3.9"
+
+before_install:
+  - pip install poetry
+
+install:
+  - poetry install
+
+script:
+  - poetry run pre-commit run
+  - poetry run coverage run --source=app -m pytest && coverage report
+
+after_success:
+  poetry run coveralls
