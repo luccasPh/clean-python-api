@@ -101,3 +101,8 @@ def test_should_returns_surveys_on_load_all(sut: SurveyMongoRepo):
     assert len(surveys) == 2
     assert surveys[0].question == "any_question"
     assert surveys[1].question == "other_question"
+
+
+def test_should_returns_empty_surveys_on_load_all(sut: SurveyMongoRepo):
+    surveys = sut.load_all()
+    assert len(surveys) == 0
