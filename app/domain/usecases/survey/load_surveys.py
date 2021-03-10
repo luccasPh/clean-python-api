@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Union
 
-from ..model.survey import SurveyModel
+from ...model.survey import SurveyModel
 
 
 class LoadSurveys(ABC):

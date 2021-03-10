@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
-from ..model.account import AccountModel
+from ...model.account import AccountModel
 
 
 @dataclass

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
-from ..model.survey import SurveyAnswerModel
+from ...model.survey import SurveyAnswerModel
 
 
 @dataclass
