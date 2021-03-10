@@ -45,11 +45,11 @@ def test_should_return_a_survey_on_success(sut: DbLoadSurveyById):
     assert surveys == expected
 
 
-# @patch.object(LoadSurveyByIdRepoStub, "load_by_id")
-# def test_should_raise_exception_if_load_survey_repo_raise(
-#     mock_load_by_id: MagicMock, sut: DbLoadSurveyById
-# ):
-#     mock_load_by_id.side_effect = Exception("Error on matrix")
-#     with pytest.raises(Exception) as excinfo:
-#         assert sut.load()
-#     assert type(excinfo.value) is Exception
+@patch.object(LoadSurveyByIdRepoStub, "load_by_id")
+def test_should_raise_exception_if_load_survey_by_id_repo_raise(
+    mock_load_by_id: MagicMock, sut: DbLoadSurveyById
+):
+    mock_load_by_id.side_effect = Exception("Error on matrix")
+    with pytest.raises(Exception) as excinfo:
+        assert sut.load_by_id("any_id")
+    assert type(excinfo.value) is Exception
