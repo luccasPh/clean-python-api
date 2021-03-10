@@ -75,3 +75,29 @@ def test_should_raise_exception_if_collection_insert_raise_on_add(
     with pytest.raises(Exception) as excinfo:
         sut.add(AddSurveyModel(**survey_data))
     assert type(excinfo.value) is Exception
+
+
+@freeze_time("2021-03-09")
+def test_should_returns_surveys_on_load_all(sut: SurveyMongoRepo):
+    MOCK_COLLECTION.insert_many(
+        [
+            dict(
+                question="any_question",
+                answers=[
+                    dict(answer="any_answer", image="any_image"),
+                ],
+                date=datetime.utcnow(),
+            ),
+            dict(
+                question="other_question",
+                answers=[
+                    dict(answer="other_answer", image="other_image"),
+                ],
+                date=datetime.utcnow(),
+            ),
+        ]
+    )
+    surveys = sut.load_all()
+    assert len(surveys) == 2
+    assert surveys[0].question == "any_question"
+    assert surveys[1].question == "other_question"
