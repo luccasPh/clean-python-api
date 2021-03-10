@@ -1,6 +1,6 @@
 from app.domain import LoadAccountByToken, AccountModel
-from ..protocols.cryptography.decrypter import Decrypter
-from ..protocols.repositories.account.load_account_by_token_repo import (
+from ...protocols.cryptography.decrypter import Decrypter
+from ...protocols.repositories.account.load_account_by_token_repo import (
     LoadAccountByTokenRepo,
 )
 
