@@ -45,3 +45,13 @@ def test_should_call_load_surveys_repo(mock_load_all: MagicMock, sut: DbLoadSurv
 def test_should_return_a_list_of_surveys_on_success(sut: DbLoadSurveys):
     surveys = sut.load()
     assert surveys == make_surveys()
+
+
+@patch.object(LoadSurveysRepoStub, "load_all")
+def test_should_raise_exception_if_load_survey_repo_raise(
+    mock_load_all: MagicMock, sut: DbLoadSurveys
+):
+    mock_load_all.side_effect = Exception("Error on matrix")
+    with pytest.raises(Exception) as excinfo:
+        assert sut.load()
+    assert type(excinfo.value) is Exception
