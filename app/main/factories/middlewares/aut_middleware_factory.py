@@ -5,8 +5,9 @@ from app.main.config import env
 
 
 def make_auth_middleware(role: str = None):
+    account_collection = get_collection("accounts")
+    load_account_by_token_repo = AccountMongoRepo(account_collection)
     decrypter = JwtAdapter(env.JWT_SECRET_KEY, "HS256")
-    load_account_by_token_repo = AccountMongoRepo(get_collection("accounts"))
     db_load_account_by_token = DbLoadAccountByToken(
         decrypter, load_account_by_token_repo
     )
