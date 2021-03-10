@@ -1,6 +1,6 @@
 import traceback
 
-from app.domain.usecases.load_account_by_token import LoadAccountByToken
+from app.domain.usecases.account.load_account_by_token import LoadAccountByToken
 from app.main.decorators.log import log_controller_handler
 from ..protocols.http import HttpRequest, HttpResponse
 from ..protocols.middlewares import Middleware
