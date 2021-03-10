@@ -2,8 +2,7 @@ import pytest
 from typing import Union
 from datetime import datetime
 from mock import patch, MagicMock
-
-# from freezegun import freeze_time
+from freezegun import freeze_time
 
 from app.data import DbLoadSurveyById, LoadSurveyByIdRepo
 from app.domain import SurveyModel
@@ -34,10 +33,16 @@ def test_should_call_load_survey_by_id_repo_with_value(
     mock_load_by_id.assert_called_with("any_id")
 
 
-# @freeze_time("2021-03-09")
-# def test_should_return_a_list_of_surveys_on_success(sut: DbLoadSurveyById):
-#     surveys = sut.load()
-#     assert surveys == make_surveys()
+@freeze_time("2021-03-09")
+def test_should_return_a_survey_on_success(sut: DbLoadSurveyById):
+    surveys = sut.load_by_id("any_id")
+    expected = SurveyModel(
+        id="any_id",
+        question="any_question",
+        answers=[dict(image="any_image", answer="any_answer")],
+        date=datetime.utcnow(),
+    )
+    assert surveys == expected
 
 
 # @patch.object(LoadSurveyByIdRepoStub, "load_by_id")

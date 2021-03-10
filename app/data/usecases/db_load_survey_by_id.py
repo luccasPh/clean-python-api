@@ -9,4 +9,5 @@ class DbLoadSurveyById(LoadSurveyById):
         self._load_survey_by_id_repo = load_survey_by_id_repo
 
     def load_by_id(self, id: str) -> Union[SurveyModel, None]:
-        self._load_survey_by_id_repo.load_by_id(id)
+        survey = self._load_survey_by_id_repo.load_by_id(id)
+        return survey
