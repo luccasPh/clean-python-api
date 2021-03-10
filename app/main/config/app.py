@@ -2,8 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from .routes import setup_routes
-from ..adapters.fastapi_middleware_adapter import adpter_middleware
-from ..factories.middlewares.aut_middleware_factory import make_auth_middleware
+from ..middlewares.route_middleware import route_middleware
 
 app = FastAPI()
 
@@ -18,14 +17,7 @@ app.add_middleware(
 
 @app.middleware("http")
 async def custom_middlewares(request: Request, call_next):
-    if request.url.path == "/api/surveys":
-        if request.method == "POST":
-            aut_middleware = make_auth_middleware("admin")
-        else:
-            aut_middleware = make_auth_middleware()
-        return await adpter_middleware(request, call_next, aut_middleware)
-    else:
-        return await call_next(request)
+    return await route_middleware(request, call_next)
 
 
 setup_routes(app)
