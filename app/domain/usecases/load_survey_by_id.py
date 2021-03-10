@@ -6,5 +6,5 @@ from ..model.survey import SurveyModel
 
 class LoadSurveyById(ABC):
     @abstractmethod
-    def loadById(self, id: str) -> Union[list[SurveyModel], None]:
+    def load_by_id(self, id: str) -> Union[list[SurveyModel], None]:
         """Abstract method for load a survey by id"""
