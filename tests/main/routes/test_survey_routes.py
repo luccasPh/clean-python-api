@@ -18,7 +18,7 @@ def mock_collection():
     mock.drop()
 
 
-@patch("app.main.factories.survey.add_survey_factory.get_collection")
+@patch("app.main.factories.add_survey.add_survey_factory.get_collection")
 def test_should_403_on_add_surveys_without_token(
     mock_factory_get_collection: MagicMock,
     mock_collection: Collection,
@@ -37,7 +37,7 @@ def test_should_403_on_add_surveys_without_token(
     assert response.status_code == 403
 
 
-@patch("app.main.factories.survey.add_survey_factory.get_collection")
+@patch("app.main.factories.add_survey.add_survey_factory.get_collection")
 @patch("app.main.factories.middlewares.aut_middleware_factory.get_collection")
 def test_should_204_on_add_surveys_wit_valid_token(
     mock_factory_survey_get_collection: MagicMock,
@@ -68,3 +68,13 @@ def test_should_204_on_add_surveys_wit_valid_token(
         ),
     )
     assert response.status_code == 204
+
+
+@patch("app.main.factories.load_surveys.load_surveys_factory.get_collection")
+def test_should_403_on_load_surveys_without_token(
+    mock_factory_get_collection: MagicMock,
+    mock_collection: Collection,
+):
+    mock_factory_get_collection.return_value = mock_collection
+    response = client.get("/api/surveys")
+    assert response.status_code == 403

@@ -18,9 +18,12 @@ app.add_middleware(
 
 @app.middleware("http")
 async def custom_middlewares(request: Request, call_next):
-    if request.url.path == "/api/surveys" and request.method == "POST":
-        admin_auth = make_auth_middleware("admin")
-        return await adpter_middleware(request, call_next, admin_auth)
+    if request.url.path == "/api/surveys":
+        if request.method == "POST":
+            aut_middleware = make_auth_middleware("admin")
+        else:
+            aut_middleware = make_auth_middleware()
+        return await adpter_middleware(request, call_next, aut_middleware)
     else:
         return await call_next(request)
 
