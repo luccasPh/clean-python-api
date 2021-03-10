@@ -8,4 +8,5 @@ class DbSaveSurveyResult(SaveSurveyResult):
         self._save_survey_result_repo = save_survey_result_repo
 
     def save(self, data: SaveSurveyResultModel) -> SurveyResultModel:
-        self._save_survey_result_repo.save(data)
+        survey_result = self._save_survey_result_repo.save(data)
+        return survey_result

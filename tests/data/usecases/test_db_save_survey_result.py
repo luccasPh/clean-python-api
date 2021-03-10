@@ -48,3 +48,19 @@ def test_should_raise_exception_if_load_survey_repo_raise(
     with pytest.raises(Exception) as excinfo:
         assert sut.save(survey_result)
     assert type(excinfo.value) is Exception
+
+
+@freeze_time("2021-03-09")
+def test_should_return_survey_result_on_success(sut: DbSaveSurveyResult):
+    data = SaveSurveyResultModel(
+        survey_id="any_survey_id", account_id="any_account_id", answer="any_answer"
+    )
+    survey_result = sut.save(data)
+    expected = SurveyResultModel(
+        id="any_id",
+        survey_id="any_survey_id",
+        account_id="any_account_id",
+        answer="any_answer",
+        date=datetime.utcnow(),
+    )
+    assert survey_result == expected
