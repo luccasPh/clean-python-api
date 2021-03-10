@@ -20,6 +20,6 @@ class SurveyMongoRepo(AddSurveyRepo, LoadSurveysRepo):
         documents = list(self._survey_collection.find())
         surveys = []
         for document in documents:
-            document["id"] = document.pop("_id")
+            document["id"] = str(document.pop("_id"))
             surveys.append(SurveyModel(**document))
         return surveys
