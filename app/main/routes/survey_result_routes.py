@@ -9,6 +9,6 @@ from ..factories.save_survey_result.save_survey_result_factory import (
 router = APIRouter()
 
 
-@router.post("/surveys/{survey_id}/results")
+@router.put("/surveys/{survey_id}/results")
 async def add_surveys(request: Request, response: Response):
     return await adpter_route(request, response, make_save_survey_result_controller())

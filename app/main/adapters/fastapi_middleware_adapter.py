@@ -8,7 +8,7 @@ async def adpter_middleware(request: Request, call_next, middleware: Middleware)
     headers = request.headers
     http_response = middleware.handle(HttpRequest(headers=headers))
     if http_response.status_code == 200:
-        request.state.account = http_response.body
+        request.state.account_id = http_response.body
         response = await call_next(request)
         return response
     else:

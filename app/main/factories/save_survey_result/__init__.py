@@ -1,3 +1,0 @@
-from .save_survey_result_factory import get_collection_accounts
-from .save_survey_result_factory import get_collection_survey_results
-from .save_survey_result_factory import get_collection_surveys

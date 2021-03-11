@@ -9,8 +9,14 @@ async def adpter_route(request: Request, response: Response, controller: Control
     body = await request.body()
     headers = request.headers
     params = request.path_params
+    account_id = getattr(request.state, "account_id", None)
     http_response = controller.handle(
-        HttpRequest(headers=headers, params=params, body=json.loads(body or "{}"))
+        HttpRequest(
+            headers=headers,
+            params=params,
+            account_id=account_id,
+            body=json.loads(body or "{}"),
+        )
     )
     response.status_code = http_response.status_code
     if http_response.status_code == 204:

@@ -2,6 +2,7 @@ from dataclasses import asdict
 from typing import Union
 from pymongo.collection import Collection
 from datetime import datetime
+from bson.objectid import ObjectId
 
 from app.domain import AddSurveyModel, SurveyModel
 from app.data import AddSurveyRepo, LoadSurveysRepo, LoadSurveyByIdRepo
@@ -25,6 +26,6 @@ class SurveyMongoRepo(AddSurveyRepo, LoadSurveysRepo, LoadSurveyByIdRepo):
         return surveys
 
     def load_by_id(self, id: str) -> Union[SurveyModel, None]:
-        survey = self._survey_collection.find_one({"_id": id})
+        survey = self._survey_collection.find_one({"_id": ObjectId(id)})
         survey["id"] = str(survey.pop("_id"))
         return SurveyModel(**survey)
