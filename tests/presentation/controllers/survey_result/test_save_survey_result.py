@@ -1,4 +1,5 @@
 import pytest
+import mongomock
 from datetime import datetime
 from typing import Union
 from mock import patch, MagicMock
@@ -40,3 +41,17 @@ def test_should_403_if_load_survey_by_id_returns_none(
     http_response = sut.handle(HttpRequest(params=dict(survey_id="any_id")))
     assert http_response.status_code == 403
     assert http_response.body["message"] == "Invalid param: survey_id"
+
+
+@patch("app.main.decorators.log.get_collection")
+@patch.object(LoadSurveyByIdStub, "load_by_id")
+def test_should_500_if_load_survey_by_id_raise_exception(
+    mock_load_by_id: MagicMock,
+    mock_get_collection: MagicMock,
+    sut: SaveSurveyResultController,
+):
+    mock_load_by_id.side_effect = Exception("Error on matrix")
+    mock_get_collection.return_value = mongomock.MongoClient().db.collection
+    http_response = sut.handle(HttpRequest(params=dict(survey_id="any_id")))
+    assert http_response.status_code == 500
+    assert http_response.body["message"] == "Internal server error"
