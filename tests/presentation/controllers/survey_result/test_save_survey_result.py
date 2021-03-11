@@ -115,3 +115,23 @@ def test_should_calls_save_survey_result_with_values(
             survey_id="any_id", account_id="any_account_id", answer="any_answer"
         )
     )
+
+
+@patch("app.main.decorators.log.get_collection")
+@patch.object(SaveSurveyResultStub, "save")
+def test_should_500_if_save_survey_result_raise_exception(
+    mock_save: MagicMock,
+    mock_get_collection: MagicMock,
+    sut: SaveSurveyResultController,
+):
+    mock_save.side_effect = Exception("Error on matrix")
+    mock_get_collection.return_value = mongomock.MongoClient().db.collection
+    http_response = sut.handle(
+        HttpRequest(
+            params=dict(survey_id="any_id"),
+            body=dict(answer="any_answer"),
+            account_id="any_account_id",
+        )
+    )
+    assert http_response.status_code == 500
+    assert http_response.body["message"] == "Internal server error"
