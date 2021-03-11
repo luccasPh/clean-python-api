@@ -11,5 +11,7 @@ async def route_middleware(request: Request, call_next):
         else:
             aut_middleware = make_auth_middleware()
         return await adpter_middleware(request, call_next, aut_middleware)
+    elif request.url.path.split("/")[-1] == "results":
+        return await adpter_middleware(request, call_next, make_auth_middleware())
     else:
         return await call_next(request)
