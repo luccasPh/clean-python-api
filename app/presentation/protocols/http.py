@@ -13,3 +13,4 @@ class HttpRequest:
     body: Optional[dict[str, Any]] = None
     headers: Optional[Any] = None
     params: Optional[Any] = None
+    account_id: Optional[str] = None
