@@ -17,7 +17,10 @@ def make_survey() -> SurveyModel:
     MOCK_COLLECTION_SURVEYS.insert_one(
         dict(
             question="any_question",
-            answers=[dict(image="any_image", answer="any_answer")],
+            answers=[
+                dict(image="any_image", answer="any_answer"),
+                dict(image="other_image", answer="other_answer"),
+            ],
             date=datetime.utcnow(),
         )
     )
@@ -65,3 +68,25 @@ def test_should_add_a_survey_result_if_its_new(sut: SaveSurveyResultMongoRepo):
     assert survey_result.survey_id == survey.id
     assert survey_result.account_id == account.id
     assert survey_result.answer == survey.answers[0].answer
+
+
+@freeze_time("2021-03-09")
+def test_should_update_a_survey_result_if_its_not_new(sut: SaveSurveyResultMongoRepo):
+    survey = make_survey()
+    account = make_account()
+    expected_id = MOCK_COLLECTION_SURVEY_RESULTS.insert_one(
+        dict(
+            survey_id=survey.id,
+            account_id=account.id,
+            answer=survey.answers[0].answer,
+            date=datetime.utcnow(),
+        )
+    ).inserted_id
+    survey_result = sut.save(
+        SaveSurveyResultModel(
+            survey_id=survey.id, account_id=account.id, answer=survey.answers[1].answer
+        )
+    )
+    assert survey_result
+    assert survey_result.id == str(expected_id)
+    assert survey_result.answer == survey.answers[1].answer
