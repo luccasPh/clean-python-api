@@ -5,7 +5,7 @@ from datetime import datetime
 from freezegun import freeze_time
 
 from app.infra import SurveyMongoRepo
-from app.domain import AddSurveyModel
+from app.domain import AddSurveyModel, SurveyAnswerModel
 
 
 MOCK_COLLECTION = mongomock.MongoClient().db.collection
@@ -106,3 +106,21 @@ def test_should_returns_surveys_on_load_all(sut: SurveyMongoRepo):
 def test_should_returns_empty_surveys_on_load_all(sut: SurveyMongoRepo):
     surveys = sut.load_all()
     assert len(surveys) == 0
+
+
+@freeze_time("2021-03-09")
+def test_should_returns_survey_on_load_survey_by_id(sut: SurveyMongoRepo):
+    survey_id = MOCK_COLLECTION.insert_one(
+        dict(
+            question="any_question",
+            answers=[
+                dict(answer="any_answer", image="any_image"),
+            ],
+            date=datetime.utcnow(),
+        )
+    ).inserted_id
+    survey = sut.load_by_id(survey_id)
+    assert survey
+    assert survey.question == "any_question"
+    assert survey.answers == [SurveyAnswerModel(answer="any_answer", image="any_image")]
+    assert survey.date == datetime.utcnow()
