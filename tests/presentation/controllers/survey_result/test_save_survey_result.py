@@ -55,3 +55,11 @@ def test_should_500_if_load_survey_by_id_raise_exception(
     http_response = sut.handle(HttpRequest(params=dict(survey_id="any_id")))
     assert http_response.status_code == 500
     assert http_response.body["message"] == "Internal server error"
+
+
+def test_should_403_if_an_invalid_answer_is_provided(sut: SaveSurveyResultController):
+    http_response = sut.handle(
+        HttpRequest(params=dict(survey_id="any_id"), body=dict(answer="invalid_answer"))
+    )
+    assert http_response.status_code == 403
+    assert http_response.body["message"] == "Invalid param: answer"

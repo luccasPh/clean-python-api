@@ -17,7 +17,13 @@ class SaveSurveyResultController(Controller):
     def handle(self, request: HttpRequest) -> HttpResponse:
         try:
             survey = self._load_survey_by_id.load_by_id(request.params)
-            if not survey:
+            if survey:
+                if not any(
+                    answers.answer == request.body.get("answer")
+                    for answers in survey.answers
+                ):
+                    return forbidden(InvalidParamError("answer"))
+            else:
                 return forbidden(InvalidParamError("survey_id"))
         except Exception:
             return server_error(ServerError(), traceback.format_exc())
