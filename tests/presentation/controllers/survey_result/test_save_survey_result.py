@@ -3,6 +3,7 @@ import mongomock
 from datetime import datetime
 from typing import Union
 from mock import patch, MagicMock
+from freezegun import freeze_time
 
 from app.presentation import SaveSurveyResultController, HttpRequest
 from app.domain import (
@@ -27,7 +28,14 @@ class LoadSurveyByIdStub(LoadSurveyById):
 
 class SaveSurveyResultStub(SaveSurveyResult):
     def save(self, data: SaveSurveyResultModel) -> SurveyResultModel:
-        ...
+        survey_result = dict(
+            id="any_id",
+            survey_id=data.survey_id,
+            account_id=data.account_id,
+            answer=data.answer,
+            date=datetime.utcnow(),
+        )
+        return SurveyResultModel(**survey_result)
 
 
 @pytest.fixture
@@ -99,10 +107,14 @@ def test_should_403_if_an_invalid_answer_is_provided(sut: SaveSurveyResultContro
     assert http_response.body["message"] == "Invalid param: answer"
 
 
+@patch("app.main.decorators.log.get_collection")
 @patch.object(SaveSurveyResultStub, "save")
 def test_should_calls_save_survey_result_with_values(
-    mock_save: MagicMock, sut: SaveSurveyResultController
+    mock_save: MagicMock,
+    mock_get_collection: MagicMock,
+    sut: SaveSurveyResultController,
 ):
+    mock_get_collection.return_value = mongomock.MongoClient().db.collection
     sut.handle(
         HttpRequest(
             params=dict(survey_id="any_id"),
@@ -135,3 +147,24 @@ def test_should_500_if_save_survey_result_raise_exception(
     )
     assert http_response.status_code == 500
     assert http_response.body["message"] == "Internal server error"
+
+
+@freeze_time("2021-03-09")
+def test_should_200_on_success(
+    sut: SaveSurveyResultController,
+):
+    http_response = sut.handle(
+        HttpRequest(
+            params=dict(survey_id="any_survey_id"),
+            body=dict(answer="any_answer"),
+            account_id="any_account_id",
+        )
+    )
+    assert http_response.status_code == 200
+    assert http_response.body == dict(
+        id="any_id",
+        survey_id="any_survey_id",
+        account_id="any_account_id",
+        answer="any_answer",
+        date=datetime.utcnow(),
+    )

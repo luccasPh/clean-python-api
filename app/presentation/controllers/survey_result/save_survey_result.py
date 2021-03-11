@@ -1,10 +1,11 @@
 import traceback
+from dataclasses import asdict
 
 from app.domain import LoadSurveyById, SaveSurveyResult, SaveSurveyResultModel
 from app.main.decorators.log import log_controller_handler
 from ...protocols.http import HttpRequest, HttpResponse
 from ...protocols.controller import Controller
-from ...helpers.http.http_herlper import forbidden, server_error
+from ...helpers.http.http_herlper import forbidden, server_error, ok
 from ...errors.invalid_param_error import InvalidParamError
 from ...errors.server_error import ServerError
 
@@ -30,7 +31,10 @@ class SaveSurveyResultController(Controller):
                         account_id=account_id,
                         answer=answer,
                     )
-                    self._save_survey_result.save(SaveSurveyResultModel(**data))
+                    survey_result = self._save_survey_result.save(
+                        SaveSurveyResultModel(**data)
+                    )
+                    return ok(asdict(survey_result))
                 else:
                     return forbidden(InvalidParamError("answer"))
             else:
