@@ -2,6 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from .routes import setup_routes
+from .openapi import setup_openapi
 from ..middlewares.route_middleware import route_middleware
 
 app = FastAPI()
@@ -21,3 +22,5 @@ async def custom_middlewares(request: Request, call_next):
 
 
 setup_routes(app)
+
+setup_openapi(app)
