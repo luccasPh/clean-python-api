@@ -1,4 +1,4 @@
-survey_schema = dict(
+load_survey_schema = dict(
     type="object",
     properties=dict(
         id=dict(type="string"),
@@ -12,5 +12,19 @@ survey_schema = dict(
         ),
         date=dict(type="string"),
     ),
-    required=["email", "password"],
+)
+
+add_survey_schema = dict(
+    type="object",
+    properties=dict(
+        question=dict(type="string"),
+        answers=dict(
+            type="array",
+            items=dict(
+                type="object",
+                properties=dict(image=dict(type="string"), answer=dict(type="string")),
+            ),
+        ),
+    ),
+    required=["question", "answers"],
 )

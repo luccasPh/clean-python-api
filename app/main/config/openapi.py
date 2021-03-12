@@ -6,7 +6,8 @@ from ..docs.schemas import (
     login_schema,
     signup_schema,
     error_schema,
-    survey_schema,
+    add_survey_schema,
+    load_survey_schema,
     api_key_auth_schema,
 )
 from ..docs.components import bad_request, unauthorized, server_error, forbidden
@@ -33,7 +34,8 @@ def setup_openapi(app: FastAPI):
                 "login": login_schema,
                 "signup": signup_schema,
                 "error": error_schema,
-                "survey": survey_schema,
+                "add_survey": add_survey_schema,
+                "load_survey": load_survey_schema,
             },
             components={
                 "securitySchemes": {"ApiKeyAuth": api_key_auth_schema},
