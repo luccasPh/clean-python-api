@@ -1,9 +1,10 @@
 from fastapi import FastAPI
 
-from ..docs.paths import login_path, survey_path
+from ..docs.paths import login_path, survey_path, signup_path
 from ..docs.schemas import (
     token_schema,
     login_schema,
+    signup_schema,
     error_schema,
     survey_schema,
     api_key_auth_schema,
@@ -30,6 +31,7 @@ def setup_openapi(app: FastAPI):
             schemas={
                 "token": token_schema,
                 "login": login_schema,
+                "signup": signup_schema,
                 "error": error_schema,
                 "survey": survey_schema,
             },
@@ -40,7 +42,11 @@ def setup_openapi(app: FastAPI):
                 "server_error": server_error,
                 "forbidden": forbidden,
             },
-            paths={"/login": login_path, "/surveys": survey_path},
+            paths={
+                "/login": login_path,
+                "/signup": signup_path,
+                "/surveys": survey_path,
+            },
         )
         app.openapi_schema = openapi_schema
         return app.openapi_schema
