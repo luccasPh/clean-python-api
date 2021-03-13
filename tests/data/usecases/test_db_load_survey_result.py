@@ -34,3 +34,13 @@ def test_should_call_load_by_survey_id_on_load_survey_result_repo_correct_values
 ):
     sut.load("any_survey_id")
     load_by_survey_id.assert_called_with("any_survey_id")
+
+
+@patch.object(LoadSurveyResultRepoStub, "load_by_survey_id")
+def test_should_raise_exception_if_load_survey_result_repo_raise(
+    load_by_survey_id: MagicMock, sut: DbLoadSurveyResult
+):
+    load_by_survey_id.side_effect = Exception("Error on matrix")
+    with pytest.raises(Exception) as excinfo:
+        assert sut.load("any_survey_id")
+    assert type(excinfo.value) is Exception
