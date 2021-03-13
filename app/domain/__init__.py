@@ -14,3 +14,4 @@ from app.domain.usecases.survey.save_survey_result import (
     SaveSurveyResultModel,
 )
 from app.domain.usecases.survey.load_survey_by_id import LoadSurveyById
+from app.domain.usecases.survey.load_survey_result import LoadSurveyResult
