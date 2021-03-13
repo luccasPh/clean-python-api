@@ -8,7 +8,6 @@ from app.main.config import env
 from app.infra import SurveyResultMongoRepo
 from app.domain import SaveSurveyResultModel, SurveyModel, AccountModel
 
-env.ENVIRONMENT = "test"
 MOCK_DATABASE = mongomock.MongoClient().db
 
 
@@ -43,6 +42,7 @@ def make_account() -> AccountModel:
 
 @pytest.fixture
 def sut():
+    env.ENVIRONMENT = "test"
     yield SurveyResultMongoRepo(
         MOCK_DATABASE["surveys"], MOCK_DATABASE["survey_results"]
     )
@@ -53,6 +53,7 @@ def sut():
 
 @freeze_time("2021-03-09")
 def test_should_add_a_survey_result_if_its_new(sut: SurveyResultMongoRepo):
+    print(env.ENVIRONMENT)
     survey = make_survey()
     account = make_account()
     survey_result = sut.save(
