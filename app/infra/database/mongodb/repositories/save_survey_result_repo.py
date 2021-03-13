@@ -4,6 +4,7 @@ from bson.objectid import ObjectId
 
 from app.domain import SurveyResultModel, SaveSurveyResultModel
 from app.data import SaveSurveyResultRepo
+from ..mongo.pipeline_builder import PipelineBuilder
 
 
 class SaveSurveyResultMongoRepo(SaveSurveyResultRepo):
@@ -30,72 +31,73 @@ class SaveSurveyResultMongoRepo(SaveSurveyResultRepo):
         return SurveyResultModel(**survey_result)
 
     def _load_by_survey_id(self, survey_id: str) -> dict:
-        survey_result = self._survey_result_collection.aggregate(
-            [
-                {"$match": {"survey_id": ObjectId(survey_id)}},
+        pipeline = (
+            PipelineBuilder()
+            .match({"survey_id": ObjectId(survey_id)})
+            .group(
                 {
-                    "$group": {
-                        "_id": 0,
-                        "data": {"$push": "$$ROOT"},
-                        "count": {"$sum": 1},
-                    }
-                },
-                {"$unwind": {"path": "$data"}},
+                    "_id": 0,
+                    "data": {"$push": "$$ROOT"},
+                    "count": {"$sum": 1},
+                }
+            )
+            .unwind({"path": "$data"})
+            .lookup(
                 {
-                    "$lookup": {
-                        "from": "surveys",
-                        "localField": "data.survey_id",
-                        "foreignField": "_id",
-                        "as": "survey",
-                    }
-                },
-                {"$unwind": {"path": "$survey"}},
+                    "from": "surveys",
+                    "localField": "data.survey_id",
+                    "foreignField": "_id",
+                    "as": "survey",
+                }
+            )
+            .unwind({"path": "$survey"})
+            .group(
                 {
-                    "$group": {
-                        "_id": {
-                            "survey_id": "$survey._id",
-                            "question": "$survey.question",
-                            "date": "$survey.date",
-                            "total": "$count",
-                            "answer": {
-                                "$filter": {
-                                    "input": "$survey.answers",
-                                    "as": "item",
-                                    "cond": {"$eq": ["$$item.answer", "$data.answer"]},
-                                }
-                            },
+                    "_id": {
+                        "survey_id": "$survey._id",
+                        "question": "$survey.question",
+                        "date": "$survey.date",
+                        "total": "$count",
+                        "answer": {
+                            "$filter": {
+                                "input": "$survey.answers",
+                                "as": "item",
+                                "cond": {"$eq": ["$$item.answer", "$data.answer"]},
+                            }
                         },
-                        "count": {"$sum": 1},
-                    }
-                },
-                {"$unwind": {"path": "$_id.answer"}},
+                    },
+                    "count": {"$sum": 1},
+                }
+            )
+            .unwind({"path": "$_id.answer"})
+            .addFields(
                 {
-                    "$addFields": {
-                        "_id.answer.count": "$count",
-                        "_id.answer.percent": {
-                            "$multiply": [{"$divide": ["$count", "$_id.total"]}, 100]
-                        },
-                    }
-                },
+                    "_id.answer.count": "$count",
+                    "_id.answer.percent": {
+                        "$multiply": [{"$divide": ["$count", "$_id.total"]}, 100]
+                    },
+                }
+            )
+            .group(
                 {
-                    "$group": {
-                        "_id": {
-                            "survey_id": "$_id.survey_id",
-                            "question": "$_id.question",
-                            "date": "$_id.date",
-                        },
-                        "answers": {"$push": "$_id.answer"},
-                    }
-                },
-                {
-                    "$project": {
-                        "_id": 0,
+                    "_id": {
                         "survey_id": "$_id.survey_id",
                         "question": "$_id.question",
                         "date": "$_id.date",
-                        "answers": "$answers",
-                    }
-                },
-            ]
+                    },
+                    "answers": {"$push": "$_id.answer"},
+                }
+            )
+            .project(
+                {
+                    "_id": 0,
+                    "survey_id": "$_id.survey_id",
+                    "question": "$_id.question",
+                    "date": "$_id.date",
+                    "answers": "$answers",
+                }
+            )
+            .build()
         )
+        survey_result = self._survey_result_collection.aggregate(pipeline)
         return list(survey_result)[0]
