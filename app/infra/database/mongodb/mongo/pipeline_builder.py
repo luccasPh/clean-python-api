@@ -26,5 +26,9 @@ class PipelineBuilder:
         self._pipeline.append({"$project": data})
         return self
 
+    def sort(self, data: dict):
+        self._pipeline.append({"$sort": data})
+        return self
+
     def build(self):
         return self._pipeline
