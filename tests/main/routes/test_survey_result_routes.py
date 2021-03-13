@@ -11,6 +11,8 @@ from app.main.config import env
 
 client = TestClient(app)
 
+env.ENVIRONMENT = "test"
+
 
 @pytest.fixture
 def mock_database():

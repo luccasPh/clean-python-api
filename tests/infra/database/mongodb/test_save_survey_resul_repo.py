@@ -4,10 +4,11 @@ from datetime import datetime
 from freezegun import freeze_time
 from bson.objectid import ObjectId
 
+from app.main.config import env
 from app.infra import SaveSurveyResultMongoRepo
 from app.domain import SaveSurveyResultModel, SurveyModel, AccountModel
 
-
+env.ENVIRONMENT = "test"
 MOCK_DATABASE = mongomock.MongoClient().db
 
 
@@ -43,8 +44,7 @@ def make_account() -> AccountModel:
 @pytest.fixture
 def sut():
     yield SaveSurveyResultMongoRepo(
-        MOCK_DATABASE["surveys"],
-        MOCK_DATABASE["survey_results"],
+        MOCK_DATABASE["surveys"], MOCK_DATABASE["survey_results"]
     )
     MOCK_DATABASE["accounts"].drop()
     MOCK_DATABASE["surveys"].drop()

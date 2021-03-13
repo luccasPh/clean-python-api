@@ -34,4 +34,4 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.coverage.run]
 branch = true
-omit = ["*/virtualenvs/*", "tests/*", "*__init__*", "app/main/docs/*", "app/main/config/*"]
+omit = ["*/virtualenvs/*", "tests/*", "*__init__*", "app/main/docs/*", "app/main/config/*", "*pipeline_factory*", "*pipeline_builder*"]
