@@ -5,7 +5,7 @@ from freezegun import freeze_time
 from bson.objectid import ObjectId
 
 from app.main.config import env
-from app.infra import SaveSurveyResultMongoRepo
+from app.infra import SurveyResultMongoRepo
 from app.domain import SaveSurveyResultModel, SurveyModel, AccountModel
 
 env.ENVIRONMENT = "test"
@@ -43,7 +43,7 @@ def make_account() -> AccountModel:
 
 @pytest.fixture
 def sut():
-    yield SaveSurveyResultMongoRepo(
+    yield SurveyResultMongoRepo(
         MOCK_DATABASE["surveys"], MOCK_DATABASE["survey_results"]
     )
     MOCK_DATABASE["accounts"].drop()
@@ -52,7 +52,7 @@ def sut():
 
 
 @freeze_time("2021-03-09")
-def test_should_add_a_survey_result_if_its_new(sut: SaveSurveyResultMongoRepo):
+def test_should_add_a_survey_result_if_its_new(sut: SurveyResultMongoRepo):
     survey = make_survey()
     account = make_account()
     survey_result = sut.save(
@@ -68,7 +68,7 @@ def test_should_add_a_survey_result_if_its_new(sut: SaveSurveyResultMongoRepo):
 
 
 @freeze_time("2021-03-09")
-def test_should_update_a_survey_result_if_its_not_new(sut: SaveSurveyResultMongoRepo):
+def test_should_update_a_survey_result_if_its_not_new(sut: SurveyResultMongoRepo):
     survey = make_survey()
     account = make_account()
     MOCK_DATABASE["survey_results"].insert_one(
@@ -89,3 +89,38 @@ def test_should_update_a_survey_result_if_its_not_new(sut: SaveSurveyResultMongo
     assert survey_result.answers[0].answer == survey.answers[1].answer
     assert survey_result.answers[0].count == 1
     assert survey_result.answers[0].percent == 100
+
+
+@freeze_time("2021-03-09")
+def test_should_return_a_survey_result_on_load_by_survey_id(sut: SurveyResultMongoRepo):
+    survey = make_survey()
+    account = make_account()
+    MOCK_DATABASE["survey_results"].insert_many(
+        [
+            dict(
+                survey_id=ObjectId(survey.id),
+                account_id=ObjectId(account.id),
+                answer=survey.answers[0].answer,
+                date=datetime.utcnow(),
+            ),
+            dict(
+                survey_id=ObjectId(survey.id),
+                account_id=ObjectId(account.id),
+                answer=survey.answers[0].answer,
+                date=datetime.utcnow(),
+            ),
+            dict(
+                survey_id=ObjectId(survey.id),
+                account_id=ObjectId(account.id),
+                answer=survey.answers[1].answer,
+                date=datetime.utcnow(),
+            ),
+        ]
+    )
+    survey_result = sut.load_by_survey_id(survey.id)
+    assert survey_result
+    assert survey_result.survey_id == survey.id
+    assert survey_result.answers[0].count == 2
+    assert round(survey_result.answers[0].percent, 1) == 66.7
+    assert survey_result.answers[1].count == 1
+    assert round(survey_result.answers[1].percent, 1) == 33.3

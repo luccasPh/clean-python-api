@@ -7,8 +7,8 @@ from app.infra.database.mongodb.repositories.survey_repo import (
     SurveyMongoRepo,
 )
 from app.infra.database.mongodb.repositories.log_repo import LogMongoRepo
-from app.infra.database.mongodb.repositories.save_survey_result_repo import (
-    SaveSurveyResultMongoRepo,
+from app.infra.database.mongodb.repositories.survey_result_repo import (
+    SurveyResultMongoRepo,
 )
 from app.infra.database.mongodb.mongo.mongo_client import get_collection
 from app.infra.database.mongodb.mongo.mongodb_adapter import MongoDbAdapter

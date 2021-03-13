@@ -3,11 +3,11 @@ from pymongo.collection import Collection
 from bson.objectid import ObjectId
 
 from app.domain import SurveyResultModel, SaveSurveyResultModel
-from app.data import SaveSurveyResultRepo
+from app.data import SaveSurveyResultRepo, LoadSurveyResultRepo
 from ..mongo.pipeline_factory import make_pipeline
 
 
-class SaveSurveyResultMongoRepo(SaveSurveyResultRepo):
+class SurveyResultMongoRepo(SaveSurveyResultRepo, LoadSurveyResultRepo):
     def __init__(
         self,
         survey_collection: Collection,
@@ -25,11 +25,11 @@ class SaveSurveyResultMongoRepo(SaveSurveyResultRepo):
             {"$set": {"answer": data.answer, "date": datetime.utcnow()}},
             upsert=True,
         )
-        survey_result = self._load_by_survey_id(data.survey_id)
+        return self.load_by_survey_id(data.survey_id)
+
+    def load_by_survey_id(self, survey_id: str) -> SurveyResultModel:
+        pipeline = make_pipeline(survey_id)
+        document = self._survey_result_collection.aggregate(pipeline)
+        survey_result = list(document)[0]
         survey_result["survey_id"] = str(survey_result["survey_id"])
         return SurveyResultModel(**survey_result)
-
-    def _load_by_survey_id(self, survey_id: str) -> dict:
-        pipeline = make_pipeline(survey_id)
-        survey_result = self._survey_result_collection.aggregate(pipeline)
-        return list(survey_result)[0]

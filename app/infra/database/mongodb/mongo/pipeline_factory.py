@@ -52,6 +52,7 @@ def make_pipeline(survey_id: str) -> dict:
                     },
                 }
             )
+            .sort({"answer.count": -1})
             .group(
                 {
                     "_id": {
