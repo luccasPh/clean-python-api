@@ -1,14 +1,24 @@
 save_survey_result_schema = dict(
-    type="object", properties=dict(answer=dict(type="string"))
+    type="object", properties=dict(answer=dict(type="string")), required=["answer"]
 )
 
 load_survey_result_schema = dict(
     type="object",
     properties=dict(
-        id=dict(type="string"),
         survey_id=dict(type="string"),
-        account_id=dict(type="string"),
-        answer=dict(type="string"),
+        question=dict(type="string"),
+        answers=dict(
+            type="array",
+            items=dict(
+                type="object",
+                properties=dict(
+                    image=dict(type="string"),
+                    answers=dict(type="string"),
+                    count=dict(type="number"),
+                    percent=dict(type="number"),
+                ),
+            ),
+        ),
         date=dict(type="string"),
     ),
 )
