@@ -40,4 +40,5 @@ class SaveSurveyResultController(Controller):
             else:
                 return forbidden(InvalidParamError("survey_id"))
         except Exception:
+            print(traceback.format_exc())
             return server_error(ServerError(), traceback.format_exc())

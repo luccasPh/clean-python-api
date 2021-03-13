@@ -1,20 +1,18 @@
 import mongomock
 import pytest
-
 from datetime import datetime
 from freezegun import freeze_time
+from bson.objectid import ObjectId
 
 from app.infra import SaveSurveyResultMongoRepo
 from app.domain import SaveSurveyResultModel, SurveyModel, AccountModel
 
 
-MOCK_COLLECTION_SURVEYS = mongomock.MongoClient().db.surveys
-MOCK_COLLECTION_SURVEY_RESULTS = mongomock.MongoClient().db.survey_results
-MOCK_COLLECTION_ACCOUNTS = mongomock.MongoClient().db.accounts
+MOCK_DATABASE = mongomock.MongoClient().db
 
 
 def make_survey() -> SurveyModel:
-    MOCK_COLLECTION_SURVEYS.insert_one(
+    MOCK_DATABASE["surveys"].insert_one(
         dict(
             question="any_question",
             answers=[
@@ -24,20 +22,20 @@ def make_survey() -> SurveyModel:
             date=datetime.utcnow(),
         )
     )
-    survey = MOCK_COLLECTION_SURVEYS.find_one()
+    survey = MOCK_DATABASE["surveys"].find_one()
     survey["id"] = str(survey.pop("_id"))
     return SurveyModel(**survey)
 
 
 def make_account() -> AccountModel:
-    MOCK_COLLECTION_ACCOUNTS.insert_one(
+    MOCK_DATABASE["accounts"].insert_one(
         dict(
             name="any_name",
             email="any_email@example.com",
             hashed_password="any_hashed_password",
         )
     )
-    account = MOCK_COLLECTION_ACCOUNTS.find_one()
+    account = MOCK_DATABASE["accounts"].find_one()
     account["id"] = str(account.pop("_id"))
     return AccountModel(**account)
 
@@ -45,13 +43,12 @@ def make_account() -> AccountModel:
 @pytest.fixture
 def sut():
     yield SaveSurveyResultMongoRepo(
-        MOCK_COLLECTION_SURVEYS,
-        MOCK_COLLECTION_SURVEY_RESULTS,
-        MOCK_COLLECTION_ACCOUNTS,
+        MOCK_DATABASE["surveys"],
+        MOCK_DATABASE["survey_results"],
     )
-    MOCK_COLLECTION_SURVEYS.drop()
-    MOCK_COLLECTION_SURVEY_RESULTS.drop()
-    MOCK_COLLECTION_ACCOUNTS.drop()
+    MOCK_DATABASE["accounts"].drop()
+    MOCK_DATABASE["surveys"].drop()
+    MOCK_DATABASE["survey_results"].drop()
 
 
 @freeze_time("2021-03-09")
@@ -64,29 +61,31 @@ def test_should_add_a_survey_result_if_its_new(sut: SaveSurveyResultMongoRepo):
         )
     )
     assert survey_result
-    assert survey_result.id
     assert survey_result.survey_id == survey.id
-    assert survey_result.account_id == account.id
-    assert survey_result.answer == survey.answers[0].answer
+    assert survey_result.answers[0].answer == survey.answers[0].answer
+    assert survey_result.answers[0].count == 1
+    assert survey_result.answers[0].percent == 100
 
 
 @freeze_time("2021-03-09")
 def test_should_update_a_survey_result_if_its_not_new(sut: SaveSurveyResultMongoRepo):
     survey = make_survey()
     account = make_account()
-    expected_id = MOCK_COLLECTION_SURVEY_RESULTS.insert_one(
+    MOCK_DATABASE["survey_results"].insert_one(
         dict(
-            survey_id=survey.id,
-            account_id=account.id,
+            survey_id=ObjectId(survey.id),
+            account_id=ObjectId(account.id),
             answer=survey.answers[0].answer,
             date=datetime.utcnow(),
         )
-    ).inserted_id
+    )
     survey_result = sut.save(
         SaveSurveyResultModel(
             survey_id=survey.id, account_id=account.id, answer=survey.answers[1].answer
         )
     )
     assert survey_result
-    assert survey_result.id == str(expected_id)
-    assert survey_result.answer == survey.answers[1].answer
+    assert survey_result.survey_id == survey.id
+    assert survey_result.answers[0].answer == survey.answers[1].answer
+    assert survey_result.answers[0].count == 1
+    assert survey_result.answers[0].percent == 100

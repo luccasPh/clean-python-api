@@ -29,10 +29,11 @@ class LoadSurveyByIdStub(LoadSurveyById):
 class SaveSurveyResultStub(SaveSurveyResult):
     def save(self, data: SaveSurveyResultModel) -> SurveyResultModel:
         survey_result = dict(
-            id="any_id",
             survey_id=data.survey_id,
-            account_id=data.account_id,
-            answer=data.answer,
+            question="any_question",
+            answers=[
+                dict(answer="any_answer", count=1, percent=100, image="any_image")
+            ],
             date=datetime.utcnow(),
         )
         return SurveyResultModel(**survey_result)
@@ -162,9 +163,8 @@ def test_should_200_on_success(
     )
     assert http_response.status_code == 200
     assert http_response.body == dict(
-        id="any_id",
         survey_id="any_survey_id",
-        account_id="any_account_id",
-        answer="any_answer",
+        question="any_question",
+        answers=[dict(answer="any_answer", count=1, percent=100, image="any_image")],
         date=datetime.utcnow(),
     )

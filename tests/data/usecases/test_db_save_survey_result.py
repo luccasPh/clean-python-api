@@ -10,10 +10,12 @@ from app.domain import SurveyResultModel, SaveSurveyResultModel
 class SaveSurveyResultRepoStub(SaveSurveyResultRepo):
     def save(self, data: SaveSurveyResultModel) -> SurveyResultModel:
         fake_survey_result = dict(
-            id="any_id",
-            account_id="any_account_id",
             survey_id="any_survey_id",
-            answer="any_answer",
+            question="any_question",
+            answers=[
+                dict(answer="any_answer", count=1, percent=40, image="any_image"),
+                dict(answer="other_answer", count=2, percent=60, image="any_image"),
+            ],
             date=datetime.utcnow(),
         )
         return SurveyResultModel(**fake_survey_result)
@@ -57,10 +59,12 @@ def test_should_return_survey_result_on_success(sut: DbSaveSurveyResult):
     )
     survey_result = sut.save(data)
     expected = SurveyResultModel(
-        id="any_id",
         survey_id="any_survey_id",
-        account_id="any_account_id",
-        answer="any_answer",
+        question="any_question",
+        answers=[
+            dict(answer="any_answer", count=1, percent=40, image="any_image"),
+            dict(answer="other_answer", count=2, percent=60, image="any_image"),
+        ],
         date=datetime.utcnow(),
     )
     assert survey_result == expected
