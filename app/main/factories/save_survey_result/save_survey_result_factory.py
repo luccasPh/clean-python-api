@@ -12,6 +12,9 @@ def make_save_survey_result_controller():
     survey_result_repo = SurveyResultMongoRepo(
         survey_collection, survey_result_collection
     )
-    db_save_survey_result = DbSaveSurveyResult(survey_result_repo)
+    db_save_survey_result = DbSaveSurveyResult(
+        save_survey_result_repo=survey_result_repo,
+        load_survey_result_repo=survey_result_repo,
+    )
     load_survey_by_id = SurveyMongoRepo(survey_collection)
     return SaveSurveyResultController(load_survey_by_id, db_save_survey_result)

@@ -53,19 +53,20 @@ def sut():
 
 @freeze_time("2021-03-09")
 def test_should_add_a_survey_result_if_its_new(sut: SurveyResultMongoRepo):
-    print(env.ENVIRONMENT)
     survey = make_survey()
     account = make_account()
-    survey_result = sut.save(
+    sut.save(
         SaveSurveyResultModel(
             survey_id=survey.id, account_id=account.id, answer=survey.answers[0].answer
         )
     )
+    survey_result = MOCK_DATABASE["survey_results"].find_one(
+        dict(survey_id=ObjectId(survey.id), account_id=ObjectId(account.id))
+    )
     assert survey_result
-    assert survey_result.survey_id == survey.id
-    assert survey_result.answers[0].answer == survey.answers[0].answer
-    assert survey_result.answers[0].count == 1
-    assert survey_result.answers[0].percent == 100
+    assert str(survey_result["survey_id"]) == survey.id
+    assert str(survey_result["account_id"]) == account.id
+    assert survey_result["answer"] == survey.answers[0].answer
 
 
 @freeze_time("2021-03-09")
@@ -85,11 +86,13 @@ def test_should_update_a_survey_result_if_its_not_new(sut: SurveyResultMongoRepo
             survey_id=survey.id, account_id=account.id, answer=survey.answers[1].answer
         )
     )
+    documents = MOCK_DATABASE["survey_results"].find(
+        dict(survey_id=ObjectId(survey.id), account_id=ObjectId(account.id))
+    )
+    survey_result = list(documents)
     assert survey_result
-    assert survey_result.survey_id == survey.id
-    assert survey_result.answers[0].answer == survey.answers[1].answer
-    assert survey_result.answers[0].count == 1
-    assert survey_result.answers[0].percent == 100
+    assert len(survey_result) == 1
+    assert survey_result[0]["answer"] == survey.answers[1].answer
 
 
 @freeze_time("2021-03-09")

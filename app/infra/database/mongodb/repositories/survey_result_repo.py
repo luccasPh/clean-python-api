@@ -16,7 +16,7 @@ class SurveyResultMongoRepo(SaveSurveyResultRepo, LoadSurveyResultRepo):
         self._survey_collection = survey_collection
         self._survey_result_collection = survey_result_collection
 
-    def save(self, data: SaveSurveyResultModel) -> SurveyResultModel:
+    def save(self, data: SaveSurveyResultModel):
         self._survey_result_collection.find_one_and_update(
             {
                 "survey_id": ObjectId(data.survey_id),
@@ -25,7 +25,6 @@ class SurveyResultMongoRepo(SaveSurveyResultRepo, LoadSurveyResultRepo):
             {"$set": {"answer": data.answer, "date": datetime.utcnow()}},
             upsert=True,
         )
-        return self.load_by_survey_id(data.survey_id)
 
     def load_by_survey_id(self, survey_id: str) -> SurveyResultModel:
         pipeline = make_pipeline(survey_id)
