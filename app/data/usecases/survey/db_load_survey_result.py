@@ -7,4 +7,5 @@ class DbLoadSurveyResult(LoadSurveyResult):
         self._load_survey_result_repo = load_survey_result_repo
 
     def load(self, survey_id: str) -> SurveyResultModel:
-        self._load_survey_result_repo.load_by_survey_id(survey_id)
+        survey_result = self._load_survey_result_repo.load_by_survey_id(survey_id)
+        return survey_result
