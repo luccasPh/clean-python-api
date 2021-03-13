@@ -1,5 +1,5 @@
 from datetime import datetime
-from pymongo.collection import Collection, ReturnDocument
+from pymongo.collection import Collection
 from bson.objectid import ObjectId
 
 from app.domain import SurveyResultModel, SaveSurveyResultModel
@@ -24,7 +24,6 @@ class SaveSurveyResultMongoRepo(SaveSurveyResultRepo):
             },
             {"$set": {"answer": data.answer, "date": datetime.utcnow()}},
             upsert=True,
-            return_document=ReturnDocument.AFTER,
         )
         survey_result = self._load_by_survey_id(data.survey_id)
         survey_result["survey_id"] = str(survey_result["survey_id"])

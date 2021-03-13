@@ -7,7 +7,7 @@ from typing import Optional
 class SurveyResultAnswerModel:
     answer: str
     count: int
-    percent: int
+    percent: float
     image: Optional[str] = None
 
 
