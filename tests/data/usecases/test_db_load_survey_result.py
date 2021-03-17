@@ -79,6 +79,25 @@ def test_should_call_load_survey_by_id_repo_if_load_survey_result_repo_returns_n
 
 
 @freeze_time("2021-03-09")
+@patch.object(LoadSurveyResultRepoStub, "load_by_survey_id")
+def test_should_return_survey_result_answers_count_0_if_load_survey_result_repo_returns_none(
+    load_by_survey_id: MagicMock, sut: DbLoadSurveyResult
+):
+    load_by_survey_id.return_value = None
+    survey_result = sut.load("any_survey_id")
+    expected = SurveyResultModel(
+        survey_id="any_survey_id",
+        question="any_question",
+        answers=[
+            dict(answer="any_answer", count=0, percent=0, image="any_image"),
+            dict(answer="other_answer", count=0, percent=0, image="any_image"),
+        ],
+        date=datetime.utcnow(),
+    )
+    assert survey_result == expected
+
+
+@freeze_time("2021-03-09")
 def test_should_return_survey_result_on_success(sut: DbLoadSurveyResult):
     survey_result = sut.load("any_survey_id")
     expected = SurveyResultModel(
