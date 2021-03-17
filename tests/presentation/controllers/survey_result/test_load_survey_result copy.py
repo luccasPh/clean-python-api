@@ -30,3 +30,13 @@ def test_should_calls_load_survey_by_id_with_value(
 ):
     sut.handle(HttpRequest(params=dict(survey_id="any_id")))
     mock_load_by_id.assert_called_with("any_id")
+
+
+@patch.object(LoadSurveyByIdStub, "load_by_id")
+def test_should_403_if_load_survey_by_id_returns_none(
+    mock_load_by_id: MagicMock, sut: LoadSurveyResultController
+):
+    mock_load_by_id.return_value = None
+    http_response = sut.handle(HttpRequest(params=dict(survey_id="any_id")))
+    assert http_response.status_code == 403
+    assert http_response.body["message"] == "Invalid param: survey_id"
