@@ -19,3 +19,6 @@ from app.presentation.middlewares.auth_middleware import AuthMiddleware
 from app.presentation.controllers.survey_result.save_survey_result import (
     SaveSurveyResultController,
 )
+from app.presentation.controllers.survey_result.load_survey_result import (
+    LoadSurveyResultController,
+)
