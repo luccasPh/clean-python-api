@@ -29,7 +29,8 @@ class SurveyResultMongoRepo(SaveSurveyResultRepo, LoadSurveyResultRepo):
 
     def load_by_survey_id(self, survey_id: str) -> Union[SurveyResultModel, None]:
         pipeline = make_pipeline(survey_id)
-        document = self._survey_result_collection.aggregate(pipeline)
-        survey_result = list(document)[0]
-        survey_result["survey_id"] = str(survey_result["survey_id"])
-        return SurveyResultModel(**survey_result)
+        document = list(self._survey_result_collection.aggregate(pipeline))
+        if document:
+            survey_result = document[0]
+            survey_result["survey_id"] = str(survey_result["survey_id"])
+            return SurveyResultModel(**survey_result)

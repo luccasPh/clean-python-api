@@ -111,3 +111,53 @@ def test_should_403_on_load_survey_result_without_token(
         "/api/surveys/any_id/results",
     )
     assert response.status_code == 403
+
+
+@patch("app.main.factories.middlewares.aut_middleware_factory.get_collection")
+@patch(
+    "app.main.factories.load_survey_result.load_survey_result_factory.get_collection_surveys"
+)
+@patch(
+    "app.main.factories.load_survey_result.load_survey_result_factory.get_collection_survey_results"  # flake8: noqa
+)
+def test_should_200_on_load_survey_result_wit_valid_token(
+    mock_get_collection_survey_results: MagicMock,
+    mock_get_collection_surveys: MagicMock,
+    mock_factory_middleware_get_collection: MagicMock,
+    mock_database: Database,
+):
+    mock_get_collection_surveys.return_value = mock_database["surveys"]
+    mock_get_collection_survey_results.return_value = mock_database["survey_results"]
+    mock_factory_middleware_get_collection.return_value = mock_database["accounts"]
+    account_id = (
+        mock_database["accounts"]
+        .insert_one(
+            dict(
+                name="John",
+                email="email@example.com",
+                hashed_password="123",
+                role="admin",
+            )
+        )
+        .inserted_id
+    )
+    access_token = jwt.encode({"id": str(account_id)}, env.JWT_SECRET_KEY)
+    mock_database["accounts"].update_one(
+        {"_id": account_id}, {"$set": {"access_token": access_token}}
+    )
+    survey_id = (
+        mock_database["surveys"]
+        .insert_one(
+            dict(
+                question="any_question",
+                answers=[dict(image="any_image", answer="any_answer")],
+                date=datetime.utcnow(),
+            )
+        )
+        .inserted_id
+    )
+    response = client.get(
+        f"/api/surveys/{str(survey_id)}/results",
+        headers={"x-access-token": access_token},
+    )
+    assert response.status_code == 200
