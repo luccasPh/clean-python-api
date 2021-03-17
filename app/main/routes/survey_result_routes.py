@@ -10,5 +10,5 @@ router = APIRouter()
 
 
 @router.put("/surveys/{survey_id}/results")
-async def add_surveys(request: Request, response: Response):
+async def save_survey_result(request: Request, response: Response):
     return await adpter_route(request, response, make_save_survey_result_controller())
