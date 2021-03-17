@@ -2,6 +2,7 @@ import pytest
 from datetime import datetime
 from typing import Union
 from mock import patch, MagicMock
+from freezegun import freeze_time
 
 from app.presentation import LoadSurveyResultController, HttpRequest
 from app.domain import LoadSurveyById, SurveyModel, LoadSurveyResult, SurveyResultModel
@@ -84,3 +85,18 @@ def test_should_500_if_load_survey_result_raise_exception(
     http_response = sut.handle(HttpRequest(params=dict(survey_id="any_id")))
     assert http_response.status_code == 500
     assert http_response.body["message"] == "Internal server error"
+
+
+@freeze_time("2021-03-09")
+def test_should_200_on_success(sut: LoadSurveyResultController):
+    http_response = sut.handle(HttpRequest(params=dict(survey_id="any_id")))
+    assert http_response.status_code == 200
+    assert http_response.body == dict(
+        survey_id="any_id",
+        question="any_question",
+        answers=[
+            dict(answer="any_answer", count=1, percent=40, image="any_image"),
+            dict(answer="other_answer", count=2, percent=60, image="any_image"),
+        ],
+        date=datetime.utcnow(),
+    )

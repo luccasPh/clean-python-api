@@ -1,7 +1,8 @@
 import traceback
+from dataclasses import asdict
 
 from app.domain import LoadSurveyById, LoadSurveyResult
-from ...helpers.http.http_herlper import forbidden, server_error
+from ...helpers.http.http_herlper import forbidden, ok, server_error
 from ...protocols.http import HttpRequest, HttpResponse
 from ...protocols.controller import Controller
 from ...errors.invalid_param_error import InvalidParamError
@@ -20,7 +21,8 @@ class LoadSurveyResultController(Controller):
             survey_id = request.params.get("survey_id")
             survey = self._load_survey_by_id.load_by_id(survey_id)
             if survey:
-                self._load_survey_result.load(survey_id)
+                survey_result = self._load_survey_result.load(survey_id)
+                return ok(asdict(survey_result))
             else:
                 return forbidden(InvalidParamError("survey_id"))
         except Exception:
