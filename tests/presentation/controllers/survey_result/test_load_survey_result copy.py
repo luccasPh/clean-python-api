@@ -57,6 +57,16 @@ def test_should_403_if_load_survey_by_id_returns_none(
     assert http_response.body["message"] == "Invalid param: survey_id"
 
 
+@patch.object(LoadSurveyByIdStub, "load_by_id")
+def test_should_500_if_load_survey_by_id_raise_exception(
+    mock_load_by_id: MagicMock, sut: LoadSurveyResultController
+):
+    mock_load_by_id.side_effect = Exception("Error on matrix")
+    http_response = sut.handle(HttpRequest(params=dict(survey_id="any_id")))
+    assert http_response.status_code == 500
+    assert http_response.body["message"] == "Internal server error"
+
+
 @patch.object(LoadSurveyResultStub, "load")
 def test_should_call_load_survey_result_with_correct_value(
     mock_load: MagicMock, sut: LoadSurveyResultController
@@ -64,3 +74,13 @@ def test_should_call_load_survey_result_with_correct_value(
     mock_load.side_effect = Exception("Error on matrix")
     sut.handle(HttpRequest(params=dict(survey_id="any_id")))
     mock_load.assert_called_with("any_id")
+
+
+@patch.object(LoadSurveyResultStub, "load")
+def test_should_500_if_load_survey_result_raise_exception(
+    mock_load: MagicMock, sut: LoadSurveyResultController
+):
+    mock_load.side_effect = Exception("Error on matrix")
+    http_response = sut.handle(HttpRequest(params=dict(survey_id="any_id")))
+    assert http_response.status_code == 500
+    assert http_response.body["message"] == "Internal server error"
