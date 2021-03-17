@@ -2,6 +2,7 @@ import pytest
 from mock import patch, MagicMock
 from datetime import datetime
 from freezegun import freeze_time
+from typing import Union
 
 from app.data import DbSaveSurveyResult, SaveSurveyResultRepo, LoadSurveyResultRepo
 from app.domain import SurveyResultModel, SaveSurveyResultModel
@@ -13,7 +14,7 @@ class SaveSurveyResultRepoStub(SaveSurveyResultRepo):
 
 
 class LoadSurveyResultRepoStub(LoadSurveyResultRepo):
-    def load_by_survey_id(self, survey_id) -> SurveyResultModel:
+    def load_by_survey_id(self, survey_id) -> Union[SurveyResultModel, None]:
         data = dict(
             survey_id="any_survey_id",
             question="any_question",

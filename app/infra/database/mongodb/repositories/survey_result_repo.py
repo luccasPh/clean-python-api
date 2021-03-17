@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Union
 from pymongo.collection import Collection
 from bson.objectid import ObjectId
 
@@ -26,7 +27,7 @@ class SurveyResultMongoRepo(SaveSurveyResultRepo, LoadSurveyResultRepo):
             upsert=True,
         )
 
-    def load_by_survey_id(self, survey_id: str) -> SurveyResultModel:
+    def load_by_survey_id(self, survey_id: str) -> Union[SurveyResultModel, None]:
         pipeline = make_pipeline(survey_id)
         document = self._survey_result_collection.aggregate(pipeline)
         survey_result = list(document)[0]
