@@ -50,7 +50,7 @@ def test_should_403_on_save_survey_result_without_token(
 @patch(
     "app.main.factories.save_survey_result.save_survey_result_factory.get_collection_survey_results"  # flake8: noqa
 )
-def test_should_200_on_load_surveys_wit_valid_token(
+def test_should_200_on_save_survey_result_wit_valid_token(
     mock_get_collection_survey_results: MagicMock,
     mock_get_collection_surveys: MagicMock,
     mock_factory_middleware_get_collection: MagicMock,
