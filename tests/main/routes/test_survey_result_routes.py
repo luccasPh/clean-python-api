@@ -92,3 +92,22 @@ def test_should_200_on_load_surveys_wit_valid_token(
         json=dict(answer="any_answer"),
     )
     assert response.status_code == 200
+
+
+@patch(
+    "app.main.factories.save_survey_result.save_survey_result_factory.get_collection_surveys"
+)
+@patch(
+    "app.main.factories.save_survey_result.save_survey_result_factory.get_collection_survey_results"  # flake8: noqa
+)
+def test_should_403_on_load_survey_result_without_token(
+    mock_get_collection_survey_results: MagicMock,
+    mock_get_collection_surveys: MagicMock,
+    mock_database: Database,
+):
+    mock_get_collection_surveys.return_value = mock_database["surveys"]
+    mock_get_collection_survey_results.return_value = mock_database["survey_results"]
+    response = client.get(
+        "/api/surveys/any_id/results",
+    )
+    assert response.status_code == 403
