@@ -1,23 +1,4 @@
 survey_result_path = dict(
-    # get=dict(
-    #     security=[dict(ApiKeyAuth=[])],
-    #     tags=["Survey"],
-    #     summary="Endpoint para lista as enquetes",
-    #     responses={
-    #         "200": dict(
-    #             description="Sucesso",
-    #             content={
-    #                 "application/json": dict(
-    #                     schema=dict(
-    #                         type="array", items={"$ref": "#/schemas/load_survey"}
-    #                     )
-    #                 )
-    #             },
-    #         ),
-    #         "403": {"$ref": "#/components/forbidden"},
-    #         "500": {"$ref": "#/components/server_error"},
-    #     },
-    # ),
     put=dict(
         security=[dict(ApiKeyAuth=[])],
         tags=["Survey"],
@@ -33,6 +14,7 @@ survey_result_path = dict(
             {
                 "in": "path",
                 "name": "survey_id",
+                "description": "ID da enquete a ser respondida",
                 "type": "string",
                 "required": True,
             }
@@ -43,6 +25,34 @@ survey_result_path = dict(
                 content={
                     "application/json": dict(
                         schema={"$ref": "#/schemas/load_survey_result"}
+                    )
+                },
+            ),
+            "403": {"$ref": "#/components/forbidden"},
+            "500": {"$ref": "#/components/server_error"},
+        },
+    ),
+    get=dict(
+        security=[dict(ApiKeyAuth=[])],
+        tags=["Survey"],
+        summary="Endpoint para consultar resultado de uma enquete",
+        parameters=[
+            {
+                "in": "path",
+                "name": "survey_id",
+                "description": "ID da enquete para consultar",
+                "type": "string",
+                "required": True,
+            }
+        ],
+        responses={
+            "200": dict(
+                description="Sucesso",
+                content={
+                    "application/json": dict(
+                        schema=dict(
+                            type="array", items={"$ref": "#/schemas/load_survey_result"}
+                        )
                     )
                 },
             ),
