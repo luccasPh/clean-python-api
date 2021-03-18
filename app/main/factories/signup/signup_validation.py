@@ -2,7 +2,7 @@ from app.infra import EmailValidatorAdapter
 from app.infra import MongoDbAdapter, get_collection
 from app.validations import (
     ValidationComposite,
-    RequiredFieldValidation,
+    RequiredFieldsValidation,
     CompareFieldsValidation,
     EmailValidation,
     UniqueFieldValidation,
@@ -12,10 +12,10 @@ from app.validations import (
 def make_signup_validation():
     return ValidationComposite(
         [
-            RequiredFieldValidation("name"),
-            RequiredFieldValidation("email"),
-            RequiredFieldValidation("password"),
-            RequiredFieldValidation("password_confirmation"),
+            RequiredFieldsValidation("name"),
+            RequiredFieldsValidation("email"),
+            RequiredFieldsValidation("password"),
+            RequiredFieldsValidation("password_confirmation"),
             CompareFieldsValidation("password", "password_confirmation"),
             EmailValidation(
                 "email", EmailValidatorAdapter(check_mx=False, skip_smtp=True)

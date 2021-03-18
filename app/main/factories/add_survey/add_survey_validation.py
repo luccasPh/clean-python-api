@@ -1,13 +1,13 @@
 from app.validations import (
     ValidationComposite,
-    RequiredFieldValidation,
+    RequiredFieldsValidation,
 )
 
 
 def make_add_survey_validation():
     return ValidationComposite(
         [
-            RequiredFieldValidation("question"),
-            RequiredFieldValidation("answers"),
+            RequiredFieldsValidation("question"),
+            RequiredFieldsValidation("answers"),
         ]
     )

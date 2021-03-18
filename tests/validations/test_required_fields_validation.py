@@ -2,19 +2,19 @@ import pytest
 from schema import Schema, And
 from mock import patch, MagicMock
 
-from app.validations import RequiredFieldValidation
+from app.validations import RequiredFieldsValidation
 
 
 @pytest.fixture
 def sut():
     schema = Schema(dict(field=And(str, len, error="Invalid key: 'field'")))
-    sut = RequiredFieldValidation(schema)
+    sut = RequiredFieldsValidation(schema)
     yield sut
 
 
-@patch("app.validations.validators.required_field_validation.Schema.validate")
+@patch("app.validations.validators.required_fields_validation.Schema.validate")
 def test_should_calls_schema_validation_with_values(
-    mock_validate: MagicMock, sut: RequiredFieldValidation
+    mock_validate: MagicMock, sut: RequiredFieldsValidation
 ):
     input = dict(field="any_field")
     sut.validate(input)
@@ -22,7 +22,7 @@ def test_should_calls_schema_validation_with_values(
 
 
 def test_should_return_missing_param_error_if_validation_fails(
-    sut: RequiredFieldValidation,
+    sut: RequiredFieldsValidation,
 ):
     input = dict()
     is_error = sut.validate(input)
@@ -30,7 +30,7 @@ def test_should_return_missing_param_error_if_validation_fails(
 
 
 def test_should_return_invalid_param_error_if_validation_fails(
-    sut: RequiredFieldValidation,
+    sut: RequiredFieldsValidation,
 ):
     input = dict(field="")
     is_error = sut.validate(input)
@@ -38,7 +38,7 @@ def test_should_return_invalid_param_error_if_validation_fails(
 
 
 def test_should_not_return_if_validation_succeeds(
-    sut: RequiredFieldValidation,
+    sut: RequiredFieldsValidation,
 ):
     input = dict(field="any_field")
     is_error = sut.validate(input)
