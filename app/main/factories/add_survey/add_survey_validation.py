@@ -1,4 +1,4 @@
-from schema import Schema, And
+from schema import Schema, And, Optional
 
 from app.validations import (
     ValidationComposite,
@@ -9,17 +9,20 @@ from app.validations import (
 def make_add_survey_validation():
     add_survey_schema = Schema(
         dict(
-            name=And(str, len, error="Invalid key: 'name'"),
-            email=And(str, len, error="Invalid key: 'email'"),
-            password=And(
-                And(str, len, error="Invalid key: 'password'"),
-                And(
-                    lambda s: len(s) > 5,
-                    error="Invalid key: 'password minimum 6 characters'",
+            question=And(str, len, error="Invalid key: 'question'"),
+            answers=And(
+                And(list, len, error="Invalid key: 'answers'"),
+                Schema(
+                    [
+                        {
+                            Optional("image"): And(
+                                str, len, error="Invalid key: 'image'"
+                            ),
+                            "answer": And(str, len, error="Invalid key: 'answer'"),
+                        },
+                    ],
+                    error="Missing key: 'answers'",
                 ),
-            ),
-            password_confirmation=And(
-                And(str, len, error="Invalid key: 'password_confirmation'"),
             ),
         )
     )

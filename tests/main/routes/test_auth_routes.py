@@ -31,8 +31,8 @@ def test_should_204_on_signup(
         json=dict(
             name="John",
             email="foo@example.com",
-            password="123",
-            password_confirmation="123",
+            password="123456",
+            password_confirmation="123456",
         ),
     )
     assert response.status_code == 204

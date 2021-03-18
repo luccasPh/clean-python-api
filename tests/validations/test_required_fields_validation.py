@@ -8,7 +8,7 @@ from app.validations import RequiredFieldsValidation
 @pytest.fixture
 def sut():
     schema = Schema(dict(field=And(str, len, error="Invalid key: 'field'")))
-    sut = RequiredFieldsValidation(schema)
+    sut = RequiredFieldsValidation(schema, "test")
     yield sut
 
 
