@@ -4,8 +4,7 @@ from app.main import make_login_validation
 def test_should_call_validation_composite_with_all_validations():
     validation_composite = make_login_validation()
     expected = [
-        "RequiredFieldValidation: email",
-        "RequiredFieldValidation: password",
+        "RequiredFieldValidation: login",
         "EmailValidation: email",
     ]
     assert len(expected) == len(validation_composite.validations)
