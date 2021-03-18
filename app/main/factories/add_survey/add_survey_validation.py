@@ -21,7 +21,7 @@ def make_add_survey_validation():
                             "answer": And(str, len, error="Invalid key: 'answer'"),
                         },
                     ],
-                    error="Missing key: 'answers'",
+                    error="Missing key: 'answer'",
                 ),
             ),
         )
