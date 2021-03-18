@@ -3,12 +3,10 @@ from schema import Schema, SchemaError
 from app.presentation import Validation, MissingParamError, InvalidParamError
 
 
-class RequiredFieldValidation(Validation):
-    def __init__(
-        self,
-        schema: Schema,
-    ):
+class RequiredFieldsValidation(Validation):
+    def __init__(self, schema: Schema, name: str):
         self._schema = schema
+        self._name = name
 
     def validate(self, input):
         try:
@@ -21,4 +19,4 @@ class RequiredFieldValidation(Validation):
                 return InvalidParamError(error[1].strip())
 
     def __str__(self):
-        return f"RequiredFieldValidation: {self.field_name}"
+        return f"RequiredFieldValidation: {self._name}"
