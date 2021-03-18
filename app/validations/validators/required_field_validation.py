@@ -1,16 +1,24 @@
-from app.presentation import Validation, MissingParamError
+from schema import Schema, SchemaError
+
+from app.presentation import Validation, MissingParamError, InvalidParamError
 
 
 class RequiredFieldValidation(Validation):
     def __init__(
         self,
-        field_name: str,
+        schema: Schema,
     ):
-        self.field_name = field_name
+        self._schema = schema
 
     def validate(self, input):
-        if self.field_name not in input:
-            return MissingParamError(self.field_name)
+        try:
+            self._schema.validate(input)
+        except SchemaError as se:
+            error = se.code.split(":")
+            if "Missing" in error[0]:
+                return MissingParamError(error[1].strip())
+            else:
+                return InvalidParamError(error[1].strip())
 
     def __str__(self):
         return f"RequiredFieldValidation: {self.field_name}"
