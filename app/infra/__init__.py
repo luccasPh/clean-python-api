@@ -1,15 +1,9 @@
-from app.infra.cryptography.bcrypt_adapter import BcryptAdapter
-from app.infra.cryptography.jwt_adapter import JwtAdapter
-from app.infra.database.mongodb.repositories.account_repo import (
-    AccountMongoRepo,
-)
-from app.infra.database.mongodb.repositories.survey_repo import (
-    SurveyMongoRepo,
-)
-from app.infra.database.mongodb.repositories.log_repo import LogMongoRepo
-from app.infra.database.mongodb.repositories.survey_result_repo import (
-    SurveyResultMongoRepo,
-)
-from app.infra.database.mongodb.mongo.mongo_client import get_collection
-from app.infra.database.mongodb.mongo.mongodb_adapter import MongoDbAdapter
-from app.infra.validators.email_validator_adapter import EmailValidatorAdapter
+from .cryptography.bcrypt_adapter import BcryptAdapter
+from .cryptography.jwt_adapter import JwtAdapter
+from .database.mongodb.repositories.account_repo import AccountMongoRepo
+from .database.mongodb.repositories.survey_repo import SurveyMongoRepo
+from .database.mongodb.repositories.log_repo import LogMongoRepo
+from .database.mongodb.repositories.survey_result_repo import SurveyResultMongoRepo
+from .database.mongodb.mongo.mongo_client import get_collection
+from .database.mongodb.mongo.mongodb_adapter import MongoDbAdapter
+from .validators.email_validator_adapter import EmailValidatorAdapter
