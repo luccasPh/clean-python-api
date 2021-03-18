@@ -4,8 +4,7 @@ from app.main import make_add_survey_validation
 def test_should_call_validation_composite_with_all_validations():
     validation_composite = make_add_survey_validation()
     expected = [
-        "RequiredFieldValidation: question",
-        "RequiredFieldValidation: answers",
+        "RequiredFieldValidation: add_survey",
     ]
     assert len(expected) == len(validation_composite.validations)
     assert not any(
