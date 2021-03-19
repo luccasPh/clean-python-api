@@ -3,9 +3,6 @@ from .protocols.cryptography.hash_comparer import HashComparer
 from .protocols.cryptography.encrypter import Encrypter
 from .protocols.cryptography.decrypter import Decrypter
 from .protocols.repositories.account.add_account_repo import AddAccountRepo
-from .protocols.repositories.account.update_access_token_repo import (
-    UpdateAccessTokenRepo,
-)
 from .protocols.repositories.account.load_account_by_email_repo import (
     LoadAccountByEmailRepo,
 )

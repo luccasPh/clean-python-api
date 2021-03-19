@@ -7,7 +7,6 @@ from app.domain import AccountModel, AddAccountModel
 from app.data import (
     AddAccountRepo,
     LoadAccountByEmailRepo,
-    UpdateAccessTokenRepo,
     LoadAccountByIdRepo,
 )
 
@@ -15,7 +14,6 @@ from app.data import (
 class AccountMongoRepo(
     AddAccountRepo,
     LoadAccountByEmailRepo,
-    UpdateAccessTokenRepo,
     LoadAccountByIdRepo,
 ):
     def __init__(self, account_collection: Collection):
@@ -36,11 +34,6 @@ class AccountMongoRepo(
                 email=account["email"],
                 hashed_password=account["hashed_password"],
             )
-
-    def update_access_token(self, id: str, access_token: str):
-        self._account_collection.update_one(
-            {"_id": ObjectId(id)}, {"$set": {"access_token": access_token}}
-        )
 
     def load_by_id(self, id: str, role: str = None) -> Union[AccountModel, None]:
         account = self._account_collection.find_one(

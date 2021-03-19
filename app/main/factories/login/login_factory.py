@@ -14,6 +14,5 @@ def make_login_controller():
         load_account_by_email_repo=account_mongo_repo,
         hash_comparer=bcrypt_adapter,
         encrypter=jwt_adapter,
-        update_access_token_repo=account_mongo_repo,
     )
     return LoginController(db_authentication, make_login_validation())
