@@ -1,18 +1,26 @@
 import pytest
 from mock import patch, MagicMock
+from datetime import datetime, timedelta
 
+from app.main.config import env
 from app.infra import JwtAdapter
+
+EXPIRATION_TIME = datetime.utcnow() + timedelta(hours=env.JWT_EXPIRATION_TIME)
 
 
 @pytest.fixture
 def sut():
-    return JwtAdapter("secret", "HS256")
+    return JwtAdapter(
+        secret="secret", expiration_time=EXPIRATION_TIME, algorithm="HS256"
+    )
 
 
 @patch("app.infra.cryptography.jwt_adapter.jwt.encode")
 def test_should_call_encode_correct_value(mock_encode: MagicMock, sut: JwtAdapter):
     sut.encrypt("any_id")
-    mock_encode.assert_called_with(dict(id="any_id"), "secret", algorithm="HS256")
+    mock_encode.assert_called_with(
+        {"id": "any_id", "exp": EXPIRATION_TIME}, "secret", algorithm="HS256"
+    )
 
 
 @patch("app.infra.cryptography.jwt_adapter.jwt.encode")
