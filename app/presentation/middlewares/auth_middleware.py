@@ -1,12 +1,14 @@
 import traceback
+from jwt.exceptions import PyJWTError
 
 from app.domain.usecases.account.load_account_by_id import LoadAccountById
 from app.main.decorators.log import log_controller_handler
 from ..protocols.http import HttpRequest, HttpResponse
 from ..protocols.middlewares import Middleware
-from ..helpers.http.http_herlper import forbidden, ok, server_error
+from ..helpers.http.http_herlper import forbidden, ok, server_error, unauthorized
 from ..errors.access_danied_error import AccessDaniedError
 from ..errors.server_error import ServerError
+from ..errors.unauthorized_error import UnauthorizedError
 
 
 class AuthMiddleware(Middleware):
@@ -28,5 +30,7 @@ class AuthMiddleware(Middleware):
                     return ok(account.id)
 
             return forbidden(AccessDaniedError())
+        except PyJWTError:
+            return unauthorized(UnauthorizedError())
         except Exception:
             return server_error(ServerError(), traceback.format_exc())
