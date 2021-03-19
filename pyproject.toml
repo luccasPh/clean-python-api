@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "clean-python-api"
-version = "1.6.0"
+version = "1.7.0"
 description = ""
 authors = ["Lucas Pinheiro <lucas4pinheiro@gmail.com>"]
 
