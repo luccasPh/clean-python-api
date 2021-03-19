@@ -1,6 +1,6 @@
 import traceback
 
-from app.domain.usecases.account.load_account_by_token import LoadAccountByToken
+from app.domain.usecases.account.load_account_by_id import LoadAccountById
 from app.main.decorators.log import log_controller_handler
 from ..protocols.http import HttpRequest, HttpResponse
 from ..protocols.middlewares import Middleware
@@ -10,8 +10,8 @@ from ..errors.server_error import ServerError
 
 
 class AuthMiddleware(Middleware):
-    def __init__(self, load_account_by_token: LoadAccountByToken, role: str = None):
-        self._load_account_by_token = load_account_by_token
+    def __init__(self, load_account_by_id: LoadAccountById, role: str = None):
+        self._load_account_by_id = load_account_by_id
         self._role = role
 
     @log_controller_handler
@@ -21,7 +21,7 @@ class AuthMiddleware(Middleware):
                 request.headers and request.headers.get("x-access-token") or None
             )
             if access_token:
-                account = self._load_account_by_token.load(
+                account = self._load_account_by_id.load(
                     access_token=access_token, role=self._role
                 )
                 if account:

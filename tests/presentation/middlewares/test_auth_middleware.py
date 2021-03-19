@@ -3,10 +3,10 @@ import mongomock
 from mock import patch, MagicMock
 
 from app.presentation import AuthMiddleware, HttpRequest
-from app.domain import LoadAccountByToken, AccountModel
+from app.domain import LoadAccountById, AccountModel
 
 
-class LoadAccountByTokenStub(LoadAccountByToken):
+class LoadAccountByIdStub(LoadAccountById):
     def load(self, access_token: str, role: str = None) -> AccountModel:
         account = AccountModel(
             id="valid_id",
@@ -19,7 +19,7 @@ class LoadAccountByTokenStub(LoadAccountByToken):
 
 @pytest.fixture
 def sut():
-    load_account_by_token_stub = LoadAccountByTokenStub()
+    load_account_by_token_stub = LoadAccountByIdStub()
     yield AuthMiddleware(load_account_by_token_stub)
 
 
@@ -29,7 +29,7 @@ def test_should_return_403_if_no_access_token_exists_in_headers(sut: AuthMiddlew
     assert http_response.body["message"] == "Access danied"
 
 
-@patch.object(LoadAccountByTokenStub, "load")
+@patch.object(LoadAccountByIdStub, "load")
 def test_should_calls_load_account_by_token_correct_values(
     mock_load: MagicMock, sut: AuthMiddleware
 ):
@@ -37,7 +37,7 @@ def test_should_calls_load_account_by_token_correct_values(
     mock_load.assert_called_with(access_token="any_token", role=None)
 
 
-@patch.object(LoadAccountByTokenStub, "load")
+@patch.object(LoadAccountByIdStub, "load")
 def test_should_return_403_if_load_account_by_token_returns_none(
     mock_load: MagicMock, sut: AuthMiddleware
 ):
@@ -59,7 +59,7 @@ def test_should_return_200_if_load_account_by_token_returns_an_account(
 
 
 @patch("app.main.decorators.log.get_collection")
-@patch.object(LoadAccountByTokenStub, "load")
+@patch.object(LoadAccountByIdStub, "load")
 def test_should_return_500_if_load_account_by_token_raise_exception(
     mock_load: MagicMock, mock_get_collection: MagicMock, sut: AuthMiddleware
 ):

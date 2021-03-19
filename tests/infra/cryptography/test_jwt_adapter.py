@@ -44,9 +44,9 @@ def test_should_call_decode_correct_value(mock_decode: MagicMock, sut: JwtAdapte
 def test_should_return_a_value_on_decrypt_success(
     mock_decode: MagicMock, sut: JwtAdapter
 ):
-    mock_decode.return_value = "any_value"
+    mock_decode.return_value = {"id": "any_id"}
     value = sut.decrypt("any_token")
-    assert value == "any_value"
+    assert value == "any_id"
 
 
 @patch("app.infra.cryptography.jwt_adapter.jwt.decode")

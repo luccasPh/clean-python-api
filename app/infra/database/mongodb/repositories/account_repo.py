@@ -8,7 +8,7 @@ from app.data import (
     AddAccountRepo,
     LoadAccountByEmailRepo,
     UpdateAccessTokenRepo,
-    LoadAccountByTokenRepo,
+    LoadAccountByIdRepo,
 )
 
 
@@ -16,7 +16,7 @@ class AccountMongoRepo(
     AddAccountRepo,
     LoadAccountByEmailRepo,
     UpdateAccessTokenRepo,
-    LoadAccountByTokenRepo,
+    LoadAccountByIdRepo,
 ):
     def __init__(self, account_collection: Collection):
         self._account_collection = account_collection
@@ -42,15 +42,12 @@ class AccountMongoRepo(
             {"_id": ObjectId(id)}, {"$set": {"access_token": access_token}}
         )
 
-    def load_by_token(
-        self, access_token: str, role: str = None
-    ) -> Union[AccountModel, None]:
+    def load_by_id(self, id: str, role: str = None) -> Union[AccountModel, None]:
         account = self._account_collection.find_one(
-            {"access_token": access_token, "$or": [{"role": role}, {"role": "admin"}]}
+            {"_id": ObjectId(id), "$or": [{"role": role}, {"role": "admin"}]}
         )
         if account:
             account["id"] = str(account.pop("_id"))
-            account.pop("access_token")
             if "role" in account:
                 account.pop("role")
             return AccountModel(**account)

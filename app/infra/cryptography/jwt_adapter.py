@@ -12,4 +12,5 @@ class JwtAdapter(Encrypter, Decrypter):
         return jwt.encode(dict(id=value), self._secret, algorithm=self._algorithm)
 
     def decrypt(self, value: str) -> str:
-        return jwt.decode(value, self._secret, algorithms=[self._algorithm])
+        decoded = jwt.decode(value, self._secret, algorithms=[self._algorithm])
+        return decoded["id"]

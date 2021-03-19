@@ -9,8 +9,8 @@ from .protocols.repositories.account.update_access_token_repo import (
 from .protocols.repositories.account.load_account_by_email_repo import (
     LoadAccountByEmailRepo,
 )
-from .protocols.repositories.account.load_account_by_token_repo import (
-    LoadAccountByTokenRepo,
+from .protocols.repositories.account.load_account_by_id_repo import (
+    LoadAccountByIdRepo,
 )
 from .protocols.repositories.survey.add_survey_repo import AddSurveyRepo
 from .protocols.repositories.survey.load_surveys_repo import LoadSurveysRepo
@@ -20,7 +20,7 @@ from .protocols.repositories.survey.load_survey_result_repo import LoadSurveyRes
 from .protocols.repositories.log.log_error_repo import LogErrorRepo
 from .usecases.account.db_add_account import DbAddAccount
 from .usecases.account.db_authentication import DbAuthentication
-from .usecases.account.db_load_account_by_token import DbLoadAccountByToken
+from .usecases.account.db_load_account_by_id import DbLoadAccountById
 from .usecases.survey.db_add_survey import DbAddSurvey, AddSurveyModel
 from .usecases.survey.db_load_surveys import DbLoadSurveys
 from .usecases.survey.db_load_survey_by_id import DbLoadSurveyById

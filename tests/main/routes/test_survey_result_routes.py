@@ -72,9 +72,6 @@ def test_should_200_on_save_survey_result_wit_valid_token(
         .inserted_id
     )
     access_token = jwt.encode({"id": str(account_id)}, env.JWT_SECRET_KEY)
-    mock_database["accounts"].update_one(
-        {"_id": account_id}, {"$set": {"access_token": access_token}}
-    )
     survey_id = (
         mock_database["surveys"]
         .insert_one(
@@ -142,9 +139,6 @@ def test_should_200_on_load_survey_result_wit_valid_token(
         .inserted_id
     )
     access_token = jwt.encode({"id": str(account_id)}, env.JWT_SECRET_KEY)
-    mock_database["accounts"].update_one(
-        {"_id": account_id}, {"$set": {"access_token": access_token}}
-    )
     survey_id = (
         mock_database["surveys"]
         .insert_one(

@@ -60,10 +60,6 @@ def test_should_204_on_add_surveys_wit_valid_token(
         )
     ).inserted_id
     access_token = jwt.encode({"id": str(account_id)}, env.JWT_SECRET_KEY)
-    mock_collection_account.update_one(
-        {"_id": account_id}, {"$set": {"access_token": access_token}}
-    )
-
     response = client.post(
         "/api/surveys",
         headers={"x-access-token": access_token},
@@ -104,9 +100,6 @@ def test_should_204_on_load_surveys_wit_valid_token(
         )
     ).inserted_id
     access_token = jwt.encode({"id": str(account_id)}, env.JWT_SECRET_KEY)
-    mock_collection_account.update_one(
-        {"_id": account_id}, {"$set": {"access_token": access_token}}
-    )
     response = client.get("/api/surveys", headers={"x-access-token": access_token})
     assert response.status_code == 204
 
@@ -127,9 +120,6 @@ def test_should_200_on_load_surveys_wit_valid_token(
         )
     ).inserted_id
     access_token = jwt.encode({"id": str(account_id)}, env.JWT_SECRET_KEY)
-    mock_collection_account.update_one(
-        {"_id": account_id}, {"$set": {"access_token": access_token}}
-    )
     mock_collection_surveys.insert_one(
         dict(
             question="any_question",

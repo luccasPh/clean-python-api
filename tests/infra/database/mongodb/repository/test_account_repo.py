@@ -140,28 +140,28 @@ def test_should_raise_exception_if_collection_update_raise_on_update_access_toke
 
 
 @patch.object(MOCK_COLLECTION, "find_one")
-def test_should_call_collection_find_one_correct_values_on_load_by_token(
+def test_should_call_collection_find_one_correct_values_on_load_by_id(
     mock_find_one: MagicMock, sut: AccountMongoRepo
 ):
+    fake_id = ObjectId()
     mock_find_one.return_value = None
-    sut.load_by_token("any_token", "any_role")
+    sut.load_by_id(str(fake_id), "any_role")
     mock_find_one.assert_called_with(
-        {"access_token": "any_token", "$or": [{"role": "any_role"}, {"role": "admin"}]}
+        {"_id": fake_id, "$or": [{"role": "any_role"}, {"role": "admin"}]}
     )
 
 
-def test_should_return_an_account_without_role_on_load_by_token_success(
+def test_should_return_an_account_without_role_on_load_by_id_success(
     sut: AccountMongoRepo,
 ):
-    MOCK_COLLECTION.insert_one(
+    account_id = MOCK_COLLECTION.insert_one(
         dict(
             name="any_name",
             email="any_email@example.com",
             hashed_password="any_password",
-            access_token="any_token",
         )
-    )
-    account = sut.load_by_token("any_token")
+    ).inserted_id
+    account = sut.load_by_id(account_id)
     assert account
     assert account.id
     assert account.name == "any_name"
@@ -169,19 +169,18 @@ def test_should_return_an_account_without_role_on_load_by_token_success(
     assert account.hashed_password == "any_password"
 
 
-def test_should_return_an_account_with_admin_role_on_load_by_token_success(
+def test_should_return_an_account_with_admin_role_on_load_by_id_success(
     sut: AccountMongoRepo,
 ):
-    MOCK_COLLECTION.insert_one(
+    account_id = MOCK_COLLECTION.insert_one(
         dict(
             name="any_name",
             email="any_email@example.com",
             hashed_password="any_password",
-            access_token="any_token",
             role="admin",
         )
-    )
-    account = sut.load_by_token("any_token", "admin")
+    ).inserted_id
+    account = sut.load_by_id(account_id, "admin")
     assert account
     assert account.id
     assert account.name == "any_name"
@@ -189,34 +188,32 @@ def test_should_return_an_account_with_admin_role_on_load_by_token_success(
     assert account.hashed_password == "any_password"
 
 
-def test_should_return_an_account_with_invalid_role_on_load_by_token_success(
+def test_should_return_an_account_with_invalid_role_on_load_by_id_success(
     sut: AccountMongoRepo,
 ):
-    MOCK_COLLECTION.insert_one(
+    account_id = MOCK_COLLECTION.insert_one(
         dict(
             name="any_name",
             email="any_email@example.com",
             hashed_password="any_password",
-            access_token="any_token",
         )
-    )
-    account = sut.load_by_token("any_token", "admin")
+    ).inserted_id
+    account = sut.load_by_id(account_id, "admin")
     assert not account
 
 
-def test_should_return_an_account_if_user_is_admin_role_on_load_by_token_success(
+def test_should_return_an_account_if_user_is_admin_role_on_load_by_id_success(
     sut: AccountMongoRepo,
 ):
-    MOCK_COLLECTION.insert_one(
+    account_id = MOCK_COLLECTION.insert_one(
         dict(
             name="any_name",
             email="any_email@example.com",
             hashed_password="any_password",
-            access_token="any_token",
             role="admin",
         )
-    )
-    account = sut.load_by_token("any_token")
+    ).inserted_id
+    account = sut.load_by_id(account_id)
     assert account
     assert account.id
     assert account.name == "any_name"
@@ -224,18 +221,20 @@ def test_should_return_an_account_if_user_is_admin_role_on_load_by_token_success
     assert account.hashed_password == "any_password"
 
 
-def test_should_return_none_on_load_by_token_fails(
+def test_should_return_none_on_load_by_id_fails(
     sut: AccountMongoRepo,
 ):
-    account = sut.load_by_token("any_token", "any_role")
+    fake_id = ObjectId()
+    account = sut.load_by_id(fake_id, "any_role")
     assert not account
 
 
 @patch.object(MOCK_COLLECTION, "find_one")
-def test_should_raise_exception_if_collection_find_raise_on_load_by_token(
+def test_should_raise_exception_if_collection_find_raise_on_load_by_id(
     mock_find_one: MagicMock, sut: AccountMongoRepo
 ):
+    fake_id = ObjectId()
     mock_find_one.side_effect = Exception()
     with pytest.raises(Exception) as excinfo:
-        assert sut.load_by_token("any_token", "any_role")
+        assert sut.load_by_id(fake_id, "any_role")
     assert type(excinfo.value) is Exception
